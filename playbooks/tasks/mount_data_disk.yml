@@ -1,0 +1,86 @@
+---
+#
+# Copyright 2022 https://github.com/kksat
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <https://www.gnu.org/licenses/>.
+
+# TODO: create disks and create FS on them for instance for HANA
+# see https://www.redhat.com/sysadmin/automating-logical-volume-manager
+
+# - name: Gather facts about the host
+#   ansible.builtin.setup:
+#     gather_subset: all
+#   register: facts
+#   delegate_to: "{{ instance.name }}"
+
+# - name: print facts
+#   debug:
+#     msg: "{{ facts }}"
+
+- name: Create partition
+  community.general.parted:
+    device: "/dev/disk/azure/scsi1/lun{{ item.lun }}"
+    number: 1
+    # flags: [ lvm ]
+    state: present
+    part_end: "{{ item.disk_size_gb }}GB"
+  become: true
+  become_user: root
+
+- name: Install lvm2 dependency
+  ansible.builtin.yum:
+    name: lvm2
+    state: present
+  become: true
+  become_user: root
+
+- name: Create volume group
+  community.general.lvg:
+      vg: "vg-lun{{ item.lun }}"
+      pvs: "/dev/disk/azure/scsi1/lun{{ item.lun }}-part1" #create pv for partition, not disk. And there is only one partition
+      # pesize: 16 # TODO: what is it? Will be using default for time beeing
+  become: true
+  become_user: root
+
+- name: Create logical volume
+  community.general.lvol:
+      vg:   "vg-lun{{ item.lun }}"
+      lv:   "lv-lun{{ item.lun }}"
+      # size: "{{ item.disk_size_gb }}g"
+      size: 100%FREE
+      force: yes
+  become: true
+  become_user: root
+
+- name: Create directory to mount disk if does not exist
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: '0755'
+    # TODO: add path_mode to molecule.yml disk parameters
+  become: true
+  become_user: root
+
+- name: Format the filesystem
+  community.general.filesystem:
+    fstype: "{{ item.filesystem }}"
+    dev: "/dev/vg-lun{{ item.lun }}/lv-lun{{ item.lun }}"
+  become: true
+  become_user: root
+
+- name: Mount the logical volume
+  ansible.posix.mount:
+    path: "{{ item.path }}"
+    src: "/dev/vg-lun{{ item.lun }}/lv-lun{{ item.lun }}"
+    fstype: "{{ item.filesystem }}"
+    state: mounted
+  become: true
+  become_user: root

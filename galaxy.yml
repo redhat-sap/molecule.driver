@@ -1,0 +1,34 @@
+namespace: molecule
+
+name: driver
+
+version: 0.1.0
+
+readme: README.md
+
+authors:
+- https://github.com/kksat
+
+description: |
+  Collection for Ansible Molecule drivers:
+  molecule-driver-azure
+
+license:
+  - GPL-3.0-only
+
+license_file: 'LICENSE'
+
+tags: [molecule, driver, azure]
+
+dependencies: {}
+
+repository: https://github.com/redhat-sap/molecule.driver
+
+documentation: https://github.com/redhat-sap/molecule.driver
+
+homepage: https://github.com/redhat-sap/molecule.driver
+
+issues: https://github.com/redhat-sap/molecule.driver/issues
+
+build_ignore: []
+

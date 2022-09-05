@@ -1,0 +1,36 @@
+---
+#
+# Copyright 2022 https://github.com/kksat
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <https://www.gnu.org/licenses/>.
+
+- name: Destroy instance
+  azure.azcollection.azure_rm_virtualmachine:
+    resource_group: "{{ item.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
+    name: "{{ item.name }}"
+    # priority: "{{ item.priority | default(azure_rm_priority_default) }}"
+    # eviction_policy: "{{ item.eviction_policy }}"
+    # vm_size: "{{ item.vm_size }}"
+    # managed_disk_type: "{{ item.managed_disk_type }}"
+    # admin_username: "{{ item.ssh_user }}"
+    # public_ip_allocation_method: "{{ item.public_ip_allocation_method |
+    #   default(public_ip_allocation_method_default) }}"
+    # ssh_password_enabled: false
+    # ssh_public_keys:
+    #   - path: "/home/{{ item.ssh_user }}/.ssh/authorized_keys"
+    #     key_data: "{{ lookup('file', ssh_public_key_path |
+    #       default(ssh_public_key_path_default) ) }}"
+    # image: "{{ item.marketplace_image }}"
+    remove_on_absent: all
+    # TODO: this also deletes all attached managed disks - might not be desired behavior
+    state: absent
+
+# TODO: destroy file shares, that were created

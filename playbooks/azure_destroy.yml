@@ -1,0 +1,90 @@
+---
+#
+# Copyright 2022 https://github.com/kksat
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <https://www.gnu.org/licenses/>.
+
+- name: Destroy
+  hosts: localhost
+  # connection: local
+  gather_facts: false
+  no_log: "{{ molecule_no_log }}"
+  tasks:
+
+  - name: Include default variables
+    ansible.builtin.include_vars:
+      file: defaults/main.yml
+
+  - name: Destroy instances
+    ansible.builtin.include_tasks:
+      file: tasks/destroy_instance.yml
+    with_items: "{{ molecule_yml.platforms }}"
+
+  # - name: Delete molecule instance(s)
+  #   azure.azcollection.azure_rm_virtualmachine:
+  #     resource_group: "{{ item.resource_group_name }}"
+  #     name: "{{ item.name }}"
+  #     remove_on_absent: all
+  #     state: absent
+  #   register: server
+  #   with_items: "{{ molecule_yml.platforms }}"
+  #   async: 7200
+  #   poll: 0
+
+  # - name: Print Azure job server.results
+  #   ansible.builtin.debug:
+  #     msg: "{{ server.results }}"
+
+  # - name: Delete subnet
+  #   azure.azcollection.azure_rm_subnet:
+  #     resource_group: "molecule"
+  #     name: "default"
+  #     address_prefix_cidr: 10.0.0.0/24
+  #     virtual_network_name: "molecule-vnet"
+  #     state: absent
+
+  # - name: Delete virtual network for molecule
+  #   azure.azcollection.azure_rm_virtualnetwork:
+  #     resource_group: "molecule"
+  #     name: "molecule-vnet"
+  #     address_prefixes: "10.0.0.0/16"
+  #     state: absent
+
+  # - name: Create resource group
+  #   azure.azcollection.azure_rm_resourcegroup:
+  #     name: "molecule"
+  #     location: "northeurope"
+  #     state: absent
+
+
+  # - name: Wait for instance(s) creation to complete
+  #   ansible.builtin.async_status:
+  #     jid: "{{ item.ansible_job_id }}"
+  #   register: azure_jobs
+  #   until: azure_jobs.finished
+  #   retries: 300
+  #   with_items: "{{ server.results }}"
+
+    # Mandatory configuration for Molecule to function.
+
+  - name: Populate instance config
+    set_fact:
+      instance_conf: {}
+
+  - name: Dump instance config
+    copy:
+      content: |
+        # Molecule managed
+
+        {{ instance_conf | to_json | from_json | to_yaml }}
+      dest: "{{ molecule_instance_config }}"
+      mode: 0600
+    when: server.changed | default(false) | bool

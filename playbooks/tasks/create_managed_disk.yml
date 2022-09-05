@@ -1,0 +1,32 @@
+---
+#
+# Copyright 2022 https://github.com/kksat
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <https://www.gnu.org/licenses/>.
+
+- name: Create managed disk
+  azure.azcollection.azure_rm_manageddisk:
+    create_option: "{{ item.create_option | default('empty') }}"
+    # TODO: add create_option to defaults
+    disk_size_gb: "{{ item.disk_size_gb }}"
+    location: "{{ instance.location }}"
+    lun: "{{ item.lun }}"
+    managed_by: "{{ instance.name }}"
+    name: "{{ instance.name }}_data_disk{{ item.lun }}"
+    os_type: "{{ item.create_option | default('linux') }}"
+    resource_group: "{{ instance.resourcegroup_name }}"
+    source_uri: "{{ instance.source_uri | default(omit) }}"
+    state: present
+    storage_account_type: "{{ item.storage_account_type }}"
+    # tags:
+    zone: "{{ item.zone | default(omit) }}"
+  with_items: "{{ instance.data_disks }}"
+  when: instance.data_disks is defined

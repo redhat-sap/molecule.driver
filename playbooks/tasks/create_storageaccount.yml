@@ -1,0 +1,37 @@
+---
+#
+# Copyright 2022 https://github.com/kksat
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <https://www.gnu.org/licenses/>.
+
+- name: Create storage account
+  azure.azcollection.azure_rm_storageaccount:
+      custom_domain: "{{ storageaccount.custom_domain | default(omit) }}"
+      force_delete_nonempty: "{{ storageaccount.force_delete_nonempty | default(false) }}"
+      https_only: "{{ storageaccount.https_only | default(true) }}"
+      kind: "{{ storageaccount.kind }}"
+      account_type: "{{ storageaccount.account_type }}"
+      access_tier: "{{ storageaccount.access_tier | default(omit) }}"
+      location: "{{ storageaccount.location }}"
+      minimum_tls_version: "{{ storageaccount.minimum_tls_version | default(omit) }}"
+      name: "{{ storageaccount.name }}"
+      # network_acls:
+      #   bypass:
+      #   default_action:
+      #   ip_rules:
+      #     action:
+      #     value:
+      #   virtual_network_rules:
+      #     action:
+      #     id:
+      resource_group: "{{ storageaccount.resource_group | default(azure_rm_resourcegroup_name_default) }}"
+      state: present
+      tags:  "{{ storageaccount.tags | default(omit) }}"

@@ -1,0 +1,28 @@
+---
+#
+# Copyright 2022 https://github.com/kksat
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <https://www.gnu.org/licenses/>.
+
+# https://man7.org/linux/man-pages/man5/fstab.5.html
+
+# https://docs.microsoft.com/en-us/azure/storage/files/storage-how-to-use-files-linux?tabs=smb311
+# https://docs.ansible.com/ansible/latest/collections/ansible/posix/mount_module.html
+
+# https://cloud.netapp.com/blog/azure-cvo-blg-smb-mount-in-ubuntu-linux-with-azure-file-storage
+
+# How to Implement 
+# 1. Get info about storage account (access points) https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_storageaccount_info_module.html
+# 2. Get info about shared storage https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_storageshare_info_module.html#return-values
+# 3. Use mount command to mount 
+
+# https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_storageshare_info_module.html#return-values
+
