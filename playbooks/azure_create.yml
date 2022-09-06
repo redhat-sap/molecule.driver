@@ -29,17 +29,17 @@
     ansible.builtin.include_vars:
       file: azure/defaults/main.yml
 
-  - name: Create storage accounts
-    ansible.builtin.include_tasks: azure/tasks/create_storageaccount.yml
-    loop: "{{ molecule_yml.services.storageaccounts }}"
-    loop_control:
-      loop_var: storageaccount
+  # - name: Create storage accounts
+  #   ansible.builtin.include_tasks: azure/tasks/create_storageaccount.yml
+  #   loop: "{{ molecule_yml.services.storageaccounts }}"
+  #   loop_control:
+  #     loop_var: storageaccount
 
-  - name: Create file shares (for each storage account)
-    ansible.builtin.include_tasks: azure/tasks/create_fileshares.yml
-    loop: "{{ molecule_yml.services.storageaccounts }}"
-    loop_control:
-      loop_var: storageaccount
+  # - name: Create file shares (for each storage account)
+  #   ansible.builtin.include_tasks: azure/tasks/create_fileshares.yml
+  #   loop: "{{ molecule_yml.services.storageaccounts }}"
+  #   loop_control:
+  #     loop_var: storageaccount
 
   - name: Create instances
     ansible.builtin.include_tasks: azure/tasks/create_instance.yml
