@@ -13,7 +13,7 @@
 # If not, see <https://www.gnu.org/licenses/>.
 
 - name: Create file share
-  ansible.builtin.include_tasks: tasks/create_fileshare.yml
+  ansible.builtin.include_tasks: azure/tasks/create_fileshare.yml
   loop: "{{ storageaccount.fileshares }}"
   loop_control:
     loop_var: fileshare

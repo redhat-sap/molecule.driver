@@ -12,6 +12,6 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 - name: Mount all data disks on instance
-  ansible.builtin.import_tasks: tasks/mount_data_disks.yml # have to import tasks, otherwise cannot delegate_to
+  ansible.builtin.import_tasks: azure/tasks/mount_data_disks.yml # have to import tasks, otherwise cannot delegate_to
   delegate_to: "{{ instance.name }}"
   when: instance.data_disks is defined
