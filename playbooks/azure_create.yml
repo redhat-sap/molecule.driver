@@ -13,10 +13,10 @@
 # If not, see <https://www.gnu.org/licenses/>.
 
 - name: Create
-  # hosts: localhost
+  hosts: localhost
   # connection: local # do not enable local connection, otherwise deletation to created VMs does not work
-  # gather_facts: false
-  # no_log: "{{ molecule_no_log }}"
+  gather_facts: false
+  no_log: "{{ molecule_no_log }}"
   # no_log: false
 
   vars:

@@ -13,10 +13,10 @@
 # If not, see <https://www.gnu.org/licenses/>.
 
 - name: Destroy
-  # hosts: localhost
+  hosts: localhost
   # connection: local
-  # gather_facts: false
-  # no_log: "{{ molecule_no_log }}"
+  gather_facts: false
+  no_log: "{{ molecule_no_log }}"
   tasks:
 
   - name: Include default variables
