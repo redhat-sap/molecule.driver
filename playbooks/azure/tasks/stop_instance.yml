@@ -1,0 +1,68 @@
+---
+#
+# Copyright 2022 https://github.com/kksat
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <https://www.gnu.org/licenses/>.
+
+# How to create Azure instances for molecule some examples
+# https://github.com/erjosito/ansible-azure-lab/blob/master/new_vm_web.yml
+# https://github.com/datwiz/molecule-azure-example
+# https://github.com/Azure-Samples/ansible-playbooks/blob/master/vm_create_ssh.yml
+# https://github.com/jonashackt/molecule-ansible-azure
+# https://github.com/microsoft/AnsibleLabs/blob/master/lab-01-mattermost-app-deploy-mysql-image-vmss-ag/mm-01-vm-deploy.yml
+# https://github.com/ScruffyFurn/azure_molecule_example/blob/main/molecule_templates/new_linux_azure_role_template/%7B%7Bcookiecutter.role_name%7D%7D/molecule/default/create.yml
+# https://docs.microsoft.com/en-us/azure/developer/ansible/vm-configure-windows?tabs=ansible
+# https://docs.microsoft.com/en-us/azure/developer/ansible/vm-configure?tabs=ansible
+
+- name: Stop instance
+  azure.azcollection.azure_rm_virtualmachine:
+    resource_group: "{{ item.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
+    name: "{{ item.name }}"
+    # state: present
+    started: false
+  register: server
+  # with_items: "{{ molecule_yml.platforms }}"
+  # TODO create async job in instance_create.yml and wait for all jobs to finish in create.yaml
+  # see example how to work with async jobs in the loop
+  # https://gist.github.com/guoqiao/28b18253a1abdb902858e2d733ca90c3
+  async: "{{ azure_rm_virtualmachine_async_default }}"
+  poll: "{{ azure_rm_virtualmachine_poll_default }}"
+
+# - name: Print Azure job server.results
+#   ansible.builtin.debug:
+#     msg: "{{ server }}"
+
+# - name: Wait for instance(s) creation to complete
+#   ansible.builtin.async_status:
+#     jid: "{{ item.ansible_job_id }}"
+#   register: azure_jobs
+#   until: azure_jobs.finished
+#   retries: 300
+#   with_items: "{{ server.results }}"
+
+# - name: Print Azure job azure_jobs.results
+#   ansible.builtin.debug:
+#     msg: "{{ azure_jobs.results }}"
+
+
+# - name: Return array with inventory parameters
+#   ansible.builtin.set_fact:
+#     azure_molecule_servers:
+#       results: "{{ azure_molecule_servers.results +
+#         [{
+#         'instance': item.name,
+#         'address': server.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress,
+#         'user': item.ssh_user | default(azure_rm_ssh_user_default),
+#         'port': 22,
+#         'identity_file': item.ssh_private_key_path |
+#           default (ssh_private_key_path_default)
+#         }] }}"
+#       changed: true
