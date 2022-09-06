@@ -13,5 +13,5 @@
 # If not, see <https://www.gnu.org/licenses/>.
 
   - name: Mount data disk
-    ansible.builtin.include_tasks: tasks/mount_data_disk.yml
+    ansible.builtin.include_tasks: azure/tasks/mount_data_disk.yml
     with_items: "{{ instance.data_disks }}"
