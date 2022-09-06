@@ -13,11 +13,11 @@
 # If not, see <https://www.gnu.org/licenses/>.
 
 - name: Create
-  hosts: localhost
+  # hosts: localhost
   # connection: local # do not enable local connection, otherwise deletation to created VMs does not work
-  gather_facts: false
+  # gather_facts: false
   # no_log: "{{ molecule_no_log }}"
-  no_log: false
+  # no_log: false
 
   vars:
     azure_molecule_servers:
@@ -27,26 +27,26 @@
   tasks:
   - name: Include default variables
     ansible.builtin.include_vars:
-      file: defaults/main.yml
+      file: azure/defaults/main.yml
 
   - name: Create storage accounts
-    ansible.builtin.include_tasks: tasks/create_storageaccount.yml
+    ansible.builtin.include_tasks: azure/tasks/create_storageaccount.yml
     loop: "{{ molecule_yml.services.storageaccounts }}"
     loop_control:
       loop_var: storageaccount
 
   - name: Create file shares (for each storage account)
-    ansible.builtin.include_tasks: tasks/create_fileshares.yml
+    ansible.builtin.include_tasks: azure/tasks/create_fileshares.yml
     loop: "{{ molecule_yml.services.storageaccounts }}"
     loop_control:
       loop_var: storageaccount
 
   - name: Create instances
-    ansible.builtin.include_tasks: tasks/create_instance.yml
+    ansible.builtin.include_tasks: azure/tasks/create_instance.yml
     with_items: "{{ molecule_yml.platforms }}"
 
   - name: Create managed disks
-    ansible.builtin.include_tasks: tasks/create_managed_disk.yml
+    ansible.builtin.include_tasks: azure/tasks/create_managed_disk.yml
     with_items: "{{ molecule_yml.platforms }}"
     loop_control:
       loop_var: instance
@@ -65,7 +65,7 @@
     when: azure_molecule_servers.changed | default(false) | bool
 
   - name: Connect to newly created instances and mount data disks
-    ansible.builtin.include_tasks: tasks/instance_mount.yml
+    ansible.builtin.include_tasks: azure/tasks/instance_mount.yml
     loop: "{{ molecule_yml.platforms }}"
     loop_control:
       loop_var: instance

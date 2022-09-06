@@ -13,19 +13,19 @@
 # If not, see <https://www.gnu.org/licenses/>.
 
 - name: Destroy
-  hosts: localhost
+  # hosts: localhost
   # connection: local
-  gather_facts: false
-  no_log: "{{ molecule_no_log }}"
+  # gather_facts: false
+  # no_log: "{{ molecule_no_log }}"
   tasks:
 
   - name: Include default variables
     ansible.builtin.include_vars:
-      file: defaults/main.yml
+      file: azure/defaults/main.yml
 
   - name: Destroy instances
     ansible.builtin.include_tasks:
-      file: tasks/destroy_instance.yml
+      file: azure/tasks/destroy_instance.yml
     with_items: "{{ molecule_yml.platforms }}"
 
   # - name: Delete molecule instance(s)
