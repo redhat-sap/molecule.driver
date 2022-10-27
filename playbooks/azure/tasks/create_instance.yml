@@ -22,11 +22,18 @@
 # https://docs.microsoft.com/en-us/azure/developer/ansible/vm-configure-windows?tabs=ansible
 # https://docs.microsoft.com/en-us/azure/developer/ansible/vm-configure?tabs=ansible
 
+- name: Get info for resource group
+  azure.azcollection.azure_rm_resourcegroup_info:
+    name:  "{{ item.resourcegroup_name |
+      default (azure_rm_resourcegroup_name_default) }}"
+  register: _
+
 - name: Create resource group
   azure.azcollection.azure_rm_resourcegroup:
     name: "{{ item.resourcegroup_name |
       default (azure_rm_resourcegroup_name_default) }}"
     location: "{{ item.location }}"
+  when: not (_.resourcegroups | length)
 
 - name: Create virtual network for molecule
   azure.azcollection.azure_rm_virtualnetwork:
