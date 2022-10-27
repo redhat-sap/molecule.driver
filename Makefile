@@ -37,3 +37,8 @@ ansible-lint:
 
 .PHONY: lint
 lint: ansible-lint yamllint
+
+
+.PHONY: tests
+tests:
+	./hack/tests.sh
