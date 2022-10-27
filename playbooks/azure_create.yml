@@ -1,6 +1,6 @@
 ---
 #
-# Copyright 2022 https://github.com/kksat
+# Copyright 2022 Red Hat, Project Atmosphere
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU
 # General Public License as published by the Free Software Foundation, version 3 of the License.
@@ -25,9 +25,9 @@
       changed: false
 
   tasks:
-  - name: Include default variables
-    ansible.builtin.include_vars:
-      file: azure/defaults/main.yml
+    - name: Include default variables
+      ansible.builtin.include_vars:
+        file: azure/defaults/main.yml
 
   # - name: Create storage accounts
   #   ansible.builtin.include_tasks: azure/tasks/create_storageaccount.yml
@@ -41,62 +41,62 @@
   #   loop_control:
   #     loop_var: storageaccount
 
-  - name: Create instances
-    ansible.builtin.include_tasks: azure/tasks/create_instance.yml
-    with_items: "{{ molecule_yml.platforms }}"
+    - name: Create instances
+      ansible.builtin.include_tasks: azure/tasks/create_instance.yml
+      with_items: "{{ molecule_yml.platforms }}"
 
-  - name: Create managed disks
-    ansible.builtin.include_tasks: azure/tasks/create_managed_disk.yml
-    with_items: "{{ molecule_yml.platforms }}"
-    loop_control:
-      loop_var: instance
-      # TODO: make sure that if there are only changes in disk configuration,
-      # azure_molecule_servers.changed gets to true anyway, is this really required?
+    - name: Create managed disks
+      ansible.builtin.include_tasks: azure/tasks/create_managed_disk.yml
+      with_items: "{{ molecule_yml.platforms }}"
+      loop_control:
+        loop_var: instance
+        # TODO: make sure that if there are only changes in disk configuration,
+        # azure_molecule_servers.changed gets to true anyway, is this really required?
 
-  - name: Add hosts to inventory to manage lvm
-    ansible.builtin.add_host:
-      name: "{{ item.instance }}"
-      hostname: "{{ item.address }}"
-      ansible_ssh_host: "{{ item.address }}"
-      ansible_ssh_port: "{{ item.port }}"
-      ansible_ssh_user: "{{ item.user }}"
-      ansible_ssh_private_key_file : "{{ item.identity_file }}"
-    with_items: "{{ azure_molecule_servers.results }}"
-    when: azure_molecule_servers.changed | default(false) | bool
+    - name: Add hosts to inventory to manage lvm
+      ansible.builtin.add_host:
+        name: "{{ item.instance }}"
+        hostname: "{{ item.address }}"
+        ansible_ssh_host: "{{ item.address }}"
+        ansible_ssh_port: "{{ item.port }}"
+        ansible_ssh_user: "{{ item.user }}"
+        ansible_ssh_private_key_file: "{{ item.identity_file }}"
+      with_items: "{{ azure_molecule_servers.results }}"
+      when: azure_molecule_servers.changed | default(false) | bool
 
-  - name: Connect to newly created instances and mount data disks
-    ansible.builtin.include_tasks: azure/tasks/instance_mount.yml
-    loop: "{{ molecule_yml.platforms }}"
-    loop_control:
-      loop_var: instance
+    - name: Connect to newly created instances and mount data disks
+      ansible.builtin.include_tasks: azure/tasks/instance_mount.yml
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        loop_var: instance
 
-# TODO: delegate LVM configuration to newly created Azure hosts
-# https://docs.ansible.com/ansible/latest/user_guide/playbooks_delegation.html
-# or maybe call another list of tasks from here passing list of hosts in the loop to execute all the tasks on each hosts
+  # TODO: delegate LVM configuration to newly created Azure hosts
+  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_delegation.html
+  # or maybe call another list of tasks from here passing list of hosts in the loop to execute all the tasks on each hosts
 
-  - when: azure_molecule_servers.changed | default(false) | bool
-    block:
-      - name: Populate instance config dict
-        ansible.builtin.set_fact:
-          instance_conf_dict: {
-            'instance': "{{ item.instance }}",
-            'address': "{{ item.address }}",
-            'user': "{{ item.user }}",
-            'port': "{{ item.port }}",
-            'identity_file': "{{ item.identity_file }}",
+    - when: azure_molecule_servers.changed | default(false) | bool
+      block:
+        - name: Populate instance config dict
+          ansible.builtin.set_fact:
+            instance_conf_dict: {
+              'instance': "{{ item.instance }}",
+              'address': "{{ item.address }}",
+              'user': "{{ item.user }}",
+              'port': "{{ item.port }}",
+              'identity_file': "{{ item.identity_file }}",
             }
-        with_items: "{{ azure_molecule_servers.results }}"
-        register: instance_config_dict
+          with_items: "{{ azure_molecule_servers.results }}"
+          register: instance_config_dict
 
-      - name: Convert instance config dict to a list
-        ansible.builtin.set_fact:
-          instance_conf: "{{ instance_config_dict.results | map(attribute='ansible_facts.instance_conf_dict') | list }}"
+        - name: Convert instance config dict to a list
+          ansible.builtin.set_fact:
+            instance_conf: "{{ instance_config_dict.results | map(attribute='ansible_facts.instance_conf_dict') | list }}"
 
-      - name: Dump instance config
-        copy:
-          content: |
-            # Molecule managed
+        - name: Dump instance config
+          copy:
+            content: |
+              # Molecule managed
 
-            {{ instance_conf | to_json | from_json | to_yaml }}
-          dest: "{{ molecule_instance_config }}"
-          mode: 0600
+              {{ instance_conf | to_json | from_json | to_yaml }}
+            dest: "{{ molecule_instance_config }}"
+            mode: 0600

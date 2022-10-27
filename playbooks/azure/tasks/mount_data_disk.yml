@@ -1,6 +1,6 @@
 ---
 #
-# Copyright 2022 https://github.com/kksat
+# Copyright 2022 Red Hat, Project Atmosphere
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU
 # General Public License as published by the Free Software Foundation, version 3 of the License.
@@ -44,19 +44,19 @@
 
 - name: Create volume group
   community.general.lvg:
-      vg: "vg-lun{{ item.lun }}"
-      pvs: "/dev/disk/azure/scsi1/lun{{ item.lun }}-part1" #create pv for partition, not disk. And there is only one partition
-      # pesize: 16 # TODO: what is it? Will be using default for time beeing
+    vg: "vg-lun{{ item.lun }}"
+    pvs: "/dev/disk/azure/scsi1/lun{{ item.lun }}-part1"  # create pv for partition, not disk. And there is only one partition
+    # pesize: 16 # TODO: what is it? Will be using default for time beeing
   become: true
   become_user: root
 
 - name: Create logical volume
   community.general.lvol:
-      vg:   "vg-lun{{ item.lun }}"
-      lv:   "lv-lun{{ item.lun }}"
+    vg: "vg-lun{{ item.lun }}"
+    lv: "lv-lun{{ item.lun }}"
       # size: "{{ item.disk_size_gb }}g"
-      size: 100%FREE
-      force: yes
+    size: 100%FREE
+    force: true
   become: true
   become_user: root
 
