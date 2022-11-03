@@ -1,0 +1,27 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  become: true
+  become_user: root
+  tasks:
+  - name: Ensure that we are running RHEL 9 on Azure
+    ansible.builtin.assert:
+      that:
+        - ansible_facts["chassis_asset_tag"] == "7783-7084-3265-9085-8269-3286-77"  # special value for Azure
+        - ansible_facts["distribution_major_version"] == "9"
+        - ansible_facts["distribution_release"] == "Plow"
+  
+  - name: Get instance metadata
+    ansible.builtin.uri:
+      url: "http://169.254.169.254/metadata/instance?api-version=2021-12-13"
+      headers:
+        Metadata: true
+    register: _
+
+  - name: Assert that instance as been properly created
+    ansible.builtin.assert:
+      that:
+        - _.json.compute.name == 'instance-creation-test01'
+        - _.json.compute.resourceGroupName == 'molecule-test'
+        - _.json.compute.storageProfile == 'molecule-test'
