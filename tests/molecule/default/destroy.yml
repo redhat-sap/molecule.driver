@@ -12,18 +12,5 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-azure_rm_resourcegroup_name_default: molecule
-azure_rm_virtualnetwork_name_default: molecule-vnet
-azure_rm_virtualnetwork_address_prefixes_default: 10.0.0.0/16
-azure_rm_subnet_name_default: molecule-subnet
-azure_rm_subnet_address_prefix_cidr_default: 10.0.0.0/24
-
-ssh_public_key_path_default: "~/.ssh/id_rsa.pub"
-ssh_private_key_path_default: "~/.ssh/id_rsa"
-public_ip_allocation_method_default: Dynamic
-azure_rm_priority_default: None
-azure_rm_eviction_policy_default: Deallocate
-azure_rm_ssh_user_default: molecule
-
-azure_rm_virtualmachine_async_default: 7200
-azure_rm_virtualmachine_poll_default: 60
+- name: Destroy
+  ansible.builtin.import_playbook: molecule.driver.azure_destroy
