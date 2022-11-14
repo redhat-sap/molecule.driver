@@ -10,7 +10,6 @@
 #
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
-
 VERSION=0.1.0
 
 .PHONY: help
@@ -27,7 +26,7 @@ install: build
 	ansible-galaxy collection install --force molecule-driver-${VERSION}.tar.gz
 
 clean: ## Remove all auto-generated files
-	rm -rf ~/.ansible/collections/ansible_collections/molecule/drive
+	rm -rf ~/.ansible/collections/ansible_collections/molecule/driver
 
 .PHONY: yamllint
 yamllint:
