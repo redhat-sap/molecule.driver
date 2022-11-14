@@ -10,13 +10,19 @@
 #
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
+.PHONY: help
+help:
+	@echo Available targets:
+	@fgrep "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sort
 
 build:
 	ansible-galaxy collection build --force
+
 install: build
 	ansible-galaxy collection install --force molecule-driver-0.1.0.tar.gz
-remove:
-	rm -rf /Users/ksatarin/.ansible/collections/ansible_collections/molecule/drive
+
+clean: ## Remove all auto-generated files
+	rm -rf ~/.ansible/collections/ansible_collections/molecule/drive
 
 yamllint:
 	yamllint .
@@ -25,5 +31,4 @@ ansible-lint:
 	ansible-lint
 
 .PHONY: lint
-
 lint: ansible-lint yamllint
