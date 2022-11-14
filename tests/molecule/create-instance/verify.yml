@@ -13,3 +13,16 @@
           - ansible_facts["distribution_major_version"] == "7"
           - ansible_facts["distribution_version"] == "7.9"
           - ansible_facts["distribution_release"] == "Maipo"
+
+    - name: Get instance metadata
+      ansible.builtin.uri:
+        url: "http://169.254.169.254/metadata/instance?api-version=2021-12-13"
+        headers:
+          Metadata: true
+      register: _
+
+    - name: Assert that instance has been properly created
+      ansible.builtin.assert:
+        that:
+          - _.json.compute.name == 'instance-creation-test'
+          - _.json.compute.resourceGroupName == 'molecule-test'
