@@ -4,6 +4,9 @@
   gather_facts: true
   become: true
   become_user: root
+  vars:
+    metadata_server: http://169.254.169.254/metadata
+    metadata_endpoint: /instance?api-version=2021-12-13
 
   tasks:
     - name: Ensure that we are running RHEL 7.9 on Azure
@@ -16,7 +19,7 @@
 
     - name: Get instance metadata
       ansible.builtin.uri:
-        url: "http://169.254.169.254/metadata/instance?api-version=2021-12-13"
+        url: "{{ metadata_server }}{{ metadata_endpoint }}"
         headers:
           Metadata: true
       register: _
