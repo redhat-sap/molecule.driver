@@ -4,9 +4,10 @@
   gather_facts: true
   become: true
   become_user: root
+  no_log: "{{ molecule_no_log }}"
   vars:
     metadata_server: http://169.254.169.254/metadata
-    metadata_endpoint: /instance?api-version=2021-12-13
+    metadata_instance_endpoint: /instance?api-version=2021-12-13
 
   tasks:
     - name: Ensure that we are running RHEL 7.9 on Azure
@@ -19,7 +20,7 @@
 
     - name: Get instance metadata
       ansible.builtin.uri:
-        url: "{{ metadata_server }}{{ metadata_endpoint }}"
+        url: "{{ metadata_server }}{{ metadata_instance_endpoint }}"
         headers:
           Metadata: true
       register: _
@@ -29,3 +30,9 @@
         that:
           - _.json.compute.name == 'instance-creation-test'
           - _.json.compute.resourceGroupName == 'molecule-test'
+
+    - name: Assert that managed disk has been properly created
+      ansible.builtin.assert:
+        that:
+          - _.json.compute.storageProfile.dataDisks|length == 1
+          - _.json.compute.storageProfile.dataDisks.0.name == "instance-creation-test_data_disk0"
