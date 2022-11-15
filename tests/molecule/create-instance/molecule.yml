@@ -17,6 +17,12 @@ platforms:
      publisher: redhat
      sku: 79sapapps-gen2
      version: latest
+    data_disks:
+      - lun: 0
+        disk_size_gb: 1
+        storage_account_type: Premium_LRS
+        filesystem: xfs
+        path: /usr/molecule-test
 
 scenario:
   create_sequence:
