@@ -12,13 +12,43 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-# - name: Backup
-#   hosts: localhost
-#   gather_facts: false
-#   no_log: "{{ molecule_no_log }}"
-#   tasks:
-#   - name: Backup managed disks
-#     ansible.builtin.include_tasks: azure/tasks/backup_managed_disk.yml
-#     with_items: "{{ molecule_yml.platforms }}"
-#     loop_control:
-#       loop_var: instance
+- name: Get instances metadata
+  hosts: all:!localhost
+  gather_facts: true
+  become: true
+  become_user: root
+  no_log: "{{ molecule_no_log }}"
+  vars:
+    metadata_server: http://169.254.169.254/metadata
+    metadata_instance_endpoint: /instance?api-version=2021-12-13
+
+  tasks:
+    - name: Get instance metadata
+      ansible.builtin.uri:
+        url: "{{ metadata_server }}{{ metadata_instance_endpoint }}"
+        headers:
+          Metadata: true
+      register: metadata_instance_info
+
+- name: Backup
+  hosts: localhost
+  no_log: "{{ molecule_no_log }}"
+
+  vars:
+    azure_molecule_servers:
+      results: []
+      changed: false
+
+  tasks:
+    - name: Get facts managed disks
+      ansible.builtin.include_tasks: ./azure/tasks/get_managed_disks.yml
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        loop_var: instance
+      register: managed_disks
+
+    - name: Backup managed disks
+      ansible.builtin.include_tasks: azure/tasks/backup_managed_disks.yml
+      with_items: "{{ managed_disks.results }}"
+      loop_control:
+        loop_var: disks
