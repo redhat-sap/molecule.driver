@@ -34,7 +34,6 @@ scenario:
     - destroy
     - create
     - create
-    - prepare
     - verify
     - destroy
     - destroy
@@ -45,7 +44,6 @@ provisioner:
   name: ansible
   playbooks:
     create: create.yml
-    prepare: prepare.yml
     converge: converge.yml
     side-effect: side_effect.yml
     verify: verify.yml
