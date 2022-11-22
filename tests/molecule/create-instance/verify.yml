@@ -13,7 +13,8 @@
     - name: Ensure that we are running RHEL 7.9 on Azure
       ansible.builtin.assert:
         that:
-          - ansible_facts["chassis_asset_tag"] == "7783-7084-3265-9085-8269-3286-77"  # special value for Azure
+          # "7783-7084-3265-9085-8269-3286-77" special value for Azure
+          - ansible_facts["chassis_asset_tag"] == "7783-7084-3265-9085-8269-3286-77"
           - ansible_facts["distribution_major_version"] == "7"
           - ansible_facts["distribution_version"] == "7.9"
           - ansible_facts["distribution_release"] == "Maipo"
