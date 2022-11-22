@@ -29,6 +29,7 @@ scenario:
     - create
   converge_sequence: []
   test_sequence:
+    - dependency
     - destroy
     - create
     - verify
