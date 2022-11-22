@@ -16,10 +16,10 @@ platforms:
     resourcegroup_name: molecule-test
     vm_size: Standard_B1s
     marketplace_image:
-     offer: rhel-sap-apps
-     publisher: redhat
-     sku: 79sapapps-gen2
-     version: latest
+      offer: rhel-sap-apps
+      publisher: redhat
+      sku: 79sapapps-gen2
+      version: latest
     data_disks:
       - lun: 0
         disk_size_gb: 1

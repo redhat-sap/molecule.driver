@@ -14,7 +14,7 @@
 # roles:
 #   - name: darkraiden.ansible-pip
 collections:
-- name: git@github.com:redhat-sap/molecule.driver.git
-  type: git
-  version: main
-- name: azure.azcollection
+  - name: git@github.com:redhat-sap/molecule.driver.git
+    type: git
+    version: main
+  - name: azure.azcollection
