@@ -18,4 +18,3 @@ collections:
   type: git
   version: main
 - name: azure.azcollection
-
