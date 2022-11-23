@@ -29,15 +29,16 @@ install: build
 clean: ## Remove all auto-generated files
 	rm -rf ~/.ansible/collections/ansible_collections/molecule/drive
 
+.PHONY: yamllint
 yamllint:
 	yamllint .
 
+.PHONY: ansible-lint
 ansible-lint:
-	ansible-lint
+	ansible-lint roles/
 
 .PHONY: lint
 lint: ansible-lint yamllint
-
 
 .PHONY: tests
 tests:
