@@ -1,6 +1,6 @@
 ---
 #
-# Copyright 2022 https://github.com/kksat
+# Copyright 2022 Red Hat, Project Atmosphere
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU
 # General Public License as published by the Free Software Foundation, version 3 of the License.
@@ -19,4 +19,3 @@
     quota: "{{ fileshare.quota }}"
     resource_group: "{{ storageaccount.resource_group | default(azure_rm_resourcegroup_name_default) }}"
     state: present
-

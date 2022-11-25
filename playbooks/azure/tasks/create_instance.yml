@@ -1,6 +1,6 @@
 ---
 #
-# Copyright 2022 https://github.com/kksat
+# Copyright 2022 Red Hat, Project Atmosphere
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU
 # General Public License as published by the Free Software Foundation, version 3 of the License.
@@ -68,6 +68,7 @@
         key_data: "{{ lookup('file', ssh_public_key_path |
           default(ssh_public_key_path_default) ) }}"
     image: "{{ item.marketplace_image }}"
+    plan: "{{ item.plan | default(omit) }}"
     state: present
   register: server
   # with_items: "{{ molecule_yml.platforms }}"

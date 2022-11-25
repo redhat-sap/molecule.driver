@@ -1,6 +1,6 @@
 ---
 #
-# Copyright 2022 https://github.com/kksat
+# Copyright 2022 Red Hat, Project Atmosphere
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU
 # General Public License as published by the Free Software Foundation, version 3 of the License.
@@ -15,14 +15,14 @@
 - name: Stop / Backup / Restore
   ansible.builtin.import_playbook: "molecule.driver.azure_{{ lookup('ansible.builtin.env','ACTION') | lower }}"
 
-# - name: Start (Create)
-#   ansible.builtin.import_playbook: molecule.driver.azure_create
-#   when: ansible.builtin.lookup('env','ACTION') | lower == 'start'
+  # - name: Start (Create)
+  #   ansible.builtin.import_playbook: molecule.driver.azure_create
+  #   when: ansible.builtin.lookup('env','ACTION') | lower == 'start'
 
-# - name: Backup
-#   ansible.builtin.import_playbook: molecule.driver.azure_backup
-#   when: ansible.builtin.lookup('env','ACTION') | lower == 'backup'
+  # - name: Backup
+  #   ansible.builtin.import_playbook: molecule.driver.azure_backup
+  #   when: ansible.builtin.lookup('env','ACTION') | lower == 'backup'
 
-# - name: Restore
-#   ansible.builtin.import_playbook: molecule.driver.azure_restore
-#   when: ansible.builtin.lookup('env','ACTION') | lower == 'restore'
+  # - name: Restore
+  #   ansible.builtin.import_playbook: molecule.driver.azure_restore
+  #   when: ansible.builtin.lookup('env','ACTION') | lower == 'restore'
