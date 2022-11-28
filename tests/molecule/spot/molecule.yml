@@ -20,19 +20,32 @@ platforms:
       offer: "rhel-sap-apps"
       sku: "8_6"
       version: latest
+  - name: instance
+    location: westeurope
+    resourcegroup_name: molecule-test
+    vm_size: Standard_B1s
+    marketplace_image:
+      publisher: redhat
+      offer: "rhel-sap-apps"
+      sku: "8_6"
+      version: latest
 
 scenario:
   create_sequence:
     - destroy
     - create
+    - create
   converge_sequence: []
   test_sequence:
     - destroy
     - create
+    - create
     - verify
+    - destroy
     - destroy
   destroy_sequence:
     - destroy
+
 
 provisioner:
   name: ansible
@@ -45,3 +58,4 @@ provisioner:
     destroy: destroy.yml
 verifier:
   name: ansible
+

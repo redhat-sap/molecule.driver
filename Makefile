@@ -17,10 +17,13 @@ install: build
 	ansible-galaxy collection install --force molecule-driver-0.1.0.tar.gz
 remove:
 	rm -rf /Users/ksatarin/.ansible/collections/ansible_collections/molecule/drive
-lint:
-	ansible-lint .
+
+yamllint:
 	yamllint .
 
-.PHONY: tests
-tests:
-	./hack/tests.sh
+ansible-lint:
+	ansible-lint
+
+.PHONY: lint
+
+lint: ansible-lint yamllint

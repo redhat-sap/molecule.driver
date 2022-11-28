@@ -54,7 +54,7 @@
     resource_group: "{{ item.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
     name: "{{ item.name }}"
     priority: "{{ item.priority | default(azure_rm_priority_default) }}"
-    eviction_policy: "{{ item.eviction_policy | default(azure_rm_eviction_policy_default) }}"
+    eviction_policy: "{% if item.priority is defined %}{{ item.eviction_policy | default(azure_rm_eviction_policy_default) }}{% else %}{{ omit }}{% endif %}"
     vm_size: "{{ item.vm_size }}"
     zones: "{{ item.zones | default([]) }}"
     managed_disk_type: "{{ item.managed_disk_type | default('Premium_LRS') }}"
