@@ -101,15 +101,16 @@
 #   ansible.builtin.debug:
 #     msg: "{{ azure_jobs.results }}"
 
-
 - name: Return array with inventory parameters
   ansible.builtin.set_fact:
     azure_molecule_servers:
       results: "{{ azure_molecule_servers.results +
-        [{'instance': item.name,
-         'address': server.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress,
-         'user': item.ssh_user | default(azure_rm_ssh_user_default),
-         'port': 22,
-         'identity_file': item.ssh_private_key_path | default(ssh_private_key_path_default)}]
-        }}"
+        [{
+        'instance': item.name,
+        'address': server.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress,
+        'user': item.ssh_user | default(azure_rm_ssh_user_default),
+        'port': 22,
+        'identity_file': item.ssh_private_key_path |
+          default (ssh_private_key_path_default)
+        }] }}"
       changed: true
