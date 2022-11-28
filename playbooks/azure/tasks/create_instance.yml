@@ -31,29 +31,29 @@
 - name: Create resource group
   azure.azcollection.azure_rm_resourcegroup:
     name: "{{ item.resourcegroup_name |
-      default (azure_rm_resourcegroup_name_default) }}"
+      default(azure_rm_resourcegroup_name_default) }}"
     location: "{{ item.location }}"
   when: not (_.resourcegroups | length)
 
 - name: Create virtual network for molecule
   azure.azcollection.azure_rm_virtualnetwork:
     resource_group: "{{ item.resourcegroup_name |
-      default (azure_rm_resourcegroup_name_default) }}"
+      default(azure_rm_resourcegroup_name_default) }}"
     name: "{{ item.virtualnetwork_name |
-      default (azure_rm_virtualnetwork_name_default) }}"
+      default(azure_rm_virtualnetwork_name_default) }}"
     address_prefixes: "{{ item.virtualnetwork_address_prefixes |
-      default (azure_rm_virtualnetwork_address_prefixes_default) }}"
+      default(azure_rm_virtualnetwork_address_prefixes_default) }}"
 
 - name: Create subnet
   azure.azcollection.azure_rm_subnet:
     resource_group: "{{ item.resourcegroup_name |
-      default (azure_rm_resourcegroup_name_default) }}"
+      default(azure_rm_resourcegroup_name_default) }}"
     name: "{{ item.subnet_name |
-      default (azure_rm_subnet_name_default) }}"
+      default(azure_rm_subnet_name_default) }}"
     address_prefix_cidr: "{{ item.subnet_address_prefix_cidr |
-      default (azure_rm_subnet_address_prefix_cidr_default) }}"
+      default(azure_rm_subnet_address_prefix_cidr_default) }}"
     virtual_network_name: "{{ item.virtualnetwork_name |
-      default (azure_rm_virtualnetwork_name_default) }}"
+      default(azure_rm_virtualnetwork_name_default) }}"
 
 
 - name: Create instance
@@ -73,7 +73,7 @@
     ssh_public_keys:
       - path: "/home/{{ item.ssh_user | default(azure_rm_ssh_user_default) }}/.ssh/authorized_keys"
         key_data: "{{ lookup('file', ssh_public_key_path |
-          default(ssh_public_key_path_default) ) }}"
+          default(ssh_public_key_path_default)) }}"
     image: "{{ item.marketplace_image }}"
     plan: "{{ item.plan | default(omit) }}"
     state: present
@@ -106,12 +106,10 @@
   ansible.builtin.set_fact:
     azure_molecule_servers:
       results: "{{ azure_molecule_servers.results +
-        [{
-        'instance': item.name,
-        'address': server.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress,
-        'user': item.ssh_user | default(azure_rm_ssh_user_default),
-        'port': 22,
-        'identity_file': item.ssh_private_key_path |
-          default (ssh_private_key_path_default)
-        }] }}"
+        [{'instance': item.name,
+         'address': server.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress,
+         'user': item.ssh_user | default(azure_rm_ssh_user_default),
+         'port': 22,
+         'identity_file': item.ssh_private_key_path | default(ssh_private_key_path_default)}]
+        }}"
       changed: true

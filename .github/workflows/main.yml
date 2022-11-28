@@ -71,3 +71,15 @@ jobs:
           cd molecule.driver/tests
           echo "Testing scenario ${{ matrix.scenario }}"
           molecule test -s ${{ matrix.scenario }} -d molecule-driver-azure
+  
+  Lint:
+    name: Lint code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Run ansible-lint
+        uses: ansible-community/ansible-lint-action@v6.8.2
+        with:
+          path: "molecule.driver/playbooks"  # <-- only one value is allowed

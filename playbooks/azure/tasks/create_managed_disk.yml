@@ -23,7 +23,8 @@
     name: "{{ instance.name }}_data_disk{{ item.lun }}"
     os_type: "{{ item.create_option | default('linux') }}"
     resource_group: "{{ instance.resourcegroup_name }}"
-    # TODO: add default value for resourcegroup_name, so disk will be created even if no resource group is specified for instance
+    # TODO: add default value for resourcegroup_name,
+    # so disk will be created even if no resource group is specified for instance
     source_uri: "{{ instance.source_uri | default(omit) }}"
     state: present
     storage_account_type: "{{ item.storage_account_type }}"

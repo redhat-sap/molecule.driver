@@ -59,6 +59,7 @@
   #       results: "{{ azure_molecule_servers.results +
   #         [{
   #         'instance': item.name,
+# yamllint disable-line rule:line-length
   #         'address': server.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress,
   #         'user': item.ssh_user | default(azure_rm_ssh_user_default),
   #         'port': 22,

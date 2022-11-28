@@ -20,8 +20,10 @@
 # https://cloud.netapp.com/blog/azure-cvo-blg-smb-mount-in-ubuntu-linux-with-azure-file-storage
 
 # How to Implement
-# 1. Get info about storage account (access points) https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_storageaccount_info_module.html
-# 2. Get info about shared storage https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_storageshare_info_module.html#return-values
+# 1. Get info about storage account (access points)
+# https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_storageaccount_info_module.html
+# 2. Get info about shared storage
+# https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_storageshare_info_module.html#return-values
 # 3. Use mount command to mount
 
 # https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_storageshare_info_module.html#return-values
