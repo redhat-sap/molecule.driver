@@ -62,6 +62,7 @@
     name: "{{ item.name }}"
     priority: "{{ item.priority | default(azure_rm_priority_default) }}"
     eviction_policy: "{% if item.priority is defined %}{{ item.eviction_policy | default(azure_rm_eviction_policy_default) }}{% else %}{{ omit }}{% endif %}"
+    open_ports: "{{ item.open_ports | default(omit) }}"
     vm_size: "{{ item.vm_size }}"
     zones: "{{ item.zones | default([]) }}"
     managed_disk_type: "{{ item.managed_disk_type | default('Premium_LRS') }}"
