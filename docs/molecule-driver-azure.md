@@ -206,6 +206,20 @@ Eviction policy for spot VM. Possible values: `Deallocate`, `Delete`.
 
 See <https://azure.microsoft.com/en-us/products/virtual-machines/spot/>.
 
+**`open_ports`**
+
+List of ports (strings) that will be open on created machine. If not provided default port 22 is used.
+If provided, port 22 has to be explicitly mentioned.
+
+Example:
+
+```ansible
+  open_ports:
+    - "22"
+    - "4237"
+    - "4239"
+```
+
 **`license_type`**
 
 Only required when provisioning custom images with BYOS license.
