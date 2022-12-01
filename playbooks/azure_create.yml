@@ -40,6 +40,9 @@
     #   loop: "{{ molecule_yml.services.storageaccounts }}"
     #   loop_control:
     #     loop_var: storageaccount
+    - name: Generate an OpenSSH keypair
+      community.crypto.openssh_keypair:
+        path: ~/.ssh/id_rsa
 
     - name: Create instances
       ansible.builtin.include_tasks: azure/tasks/create_instance.yml
