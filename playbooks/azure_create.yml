@@ -40,6 +40,12 @@
     #   loop: "{{ molecule_yml.services.storageaccounts }}"
     #   loop_control:
     #     loop_var: storageaccount
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: ~/.ssh/
+        state: directory
+        mode: '0700'
+
     - name: Generate an OpenSSH keypair
       community.crypto.openssh_keypair:
         path: ~/.ssh/id_rsa
