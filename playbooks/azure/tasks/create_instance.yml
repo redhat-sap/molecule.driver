@@ -55,6 +55,11 @@
     virtual_network_name: "{{ item.virtualnetwork_name |
       default(azure_rm_virtualnetwork_name_default) }}"
 
+- name: Set authorized key took from file
+  ansible.posix.authorized_key:
+    user: runner
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 
 - name: Create instance
   azure.azcollection.azure_rm_virtualmachine:
