@@ -33,7 +33,6 @@ scenario:
     - create
   converge_sequence: []
   test_sequence:
-    - lint
     - destroy
     - create
     - create
