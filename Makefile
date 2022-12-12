@@ -13,10 +13,13 @@
 
 VERSION=0.1.0
 
+.DEFAULT_GOAL:=help
+
+
 .PHONY: help
-help:
-	@echo Available targets:
-	@fgrep "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sort
+help: ## Display this help
+	@echo Makefile for molecule.driver project
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) }' $(MAKEFILE_LIST)
 
 # Developer convenience targets
 
@@ -29,17 +32,19 @@ install: build
 clean: ## Remove all auto-generated files
 	rm -rf ~/.ansible/collections/ansible_collections/molecule/driver
 
-.PHONY: yamllint
-yamllint:
+.PHONY: yamllint 
+yamllint: ## Run linter for YAML files
 	yamllint .
 
-.PHONY: ansible-lint
-ansible-lint:
+.PHONY: ansible-lint 
+ansible-lint: ## Run ansible-lint
 	ansible-lint roles/
 
 .PHONY: lint
-lint: ansible-lint yamllint
+lint: ansible-lint yamllint ## Execute yamllint and ansible-lint target
 
 .PHONY: tests
-tests:
+tests: ## Run molecule tests
 	./hack/tests.sh
+
+$(VERBOSE).SILENT:
