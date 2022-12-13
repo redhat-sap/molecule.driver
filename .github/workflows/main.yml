@@ -25,7 +25,6 @@ jobs:
       - name: ⤵️ Check out molecule.driver
         uses: actions/checkout@v3
         with:
-          path: molecule.driver
           ref: add-molecule-test-scenarios
 
       - name: Install python
@@ -36,7 +35,7 @@ jobs:
       - name: Install Python dependencies
         uses: py-actions/py-dependency-install@v4
         with:
-          path: "./molecule.driver/requirements-dev.txt"
+          path: "./requirements-dev.txt"
 
       - name: Install hacked molecule
         run: |
@@ -61,13 +60,11 @@ jobs:
 
       - name: Install molecule.driver
         run: |
-          cd molecule.driver
           make install
-          cd ..
 
       - name: ⚙ Run molecule tests
+        working-directory: ./tests
         run: |
-          cd molecule.driver/tests
           echo "Testing scenario ${{ matrix.scenario }}"
           molecule test -s ${{ matrix.scenario }} -d molecule-driver-azure
   
