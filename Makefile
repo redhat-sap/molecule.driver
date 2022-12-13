@@ -47,4 +47,7 @@ lint: ansible-lint yamllint ## Execute yamllint and ansible-lint target
 tests: ## Run molecule tests
 	./hack/tests.sh
 
-$(VERBOSE).SILENT:
+.PHONY: install-requirements-dev ## Install python requirements
+install-requirements-dev:
+	pip install -r requirements-dev.txt
+
