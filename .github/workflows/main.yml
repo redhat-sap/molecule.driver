@@ -33,20 +33,17 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install Ansible
+      - name: Install python requirements
         run: |
-          pip install ansible
-
-      - name: Install molecule-driver-azure
-        run: |
-          pip install molecule-driver-azure
+          make install-requirements-dev
 
       - name: Install hacked molecule
         run: |
           python3 -m pip install -U git+https://github.com/gciavarrini/molecule@disable-validation
+
       - name: Clean up
         run: |
-          rm -rf /home/runner/.ansible/collections/ansible_collections/molecule/driver
+          make remove
 
       - uses: azure/login@v1
         with:
