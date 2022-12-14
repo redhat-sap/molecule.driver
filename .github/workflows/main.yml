@@ -61,8 +61,8 @@ jobs:
         working-directory: ./tests
         run: |
           echo "Testing scenario ${{ matrix.scenario }}"
-          molecule test -s ${{ matrix.scenario }} -d molecule-driver-azure
-  
+          molecule test -s ${{ matrix.scenario }}
+
   Lint:
     name: Lint code
     runs-on: ubuntu-latest
