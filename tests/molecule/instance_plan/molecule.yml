@@ -32,7 +32,9 @@ scenario:
     - dependency
     - destroy
     - create
+    - create
     - verify
+    - destroy
     - destroy
   destroy_sequence:
     - destroy
