@@ -38,7 +38,7 @@ yamllint: ## Run linter for YAML files
 
 .PHONY: ansible-lint 
 ansible-lint: ## Run ansible-lint
-	ansible-lint roles/
+	ansible-lint .
 
 .PHONY: lint
 lint: ansible-lint yamllint ## Execute yamllint and ansible-lint target

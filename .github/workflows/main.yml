@@ -69,6 +69,11 @@ jobs:
     steps:
       - name: ⤵️ Check out code
         uses: actions/checkout@v3
+      
+      - name: Install Python dependencies
+        uses: py-actions/py-dependency-install@v4
+        with:
+          path: "./requirements-dev.txt"
 
       - name: 🚀 Run ansible-lint
         run: make ansible-lint
