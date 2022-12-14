@@ -53,11 +53,6 @@ jobs:
         run: |
           az webapp list --query "[?state=='Running']"
 
-      - name: Install azure collection
-        run: |
-          ansible-galaxy collection install azure.azcollection
-          ansible-galaxy collection install community.crypto
-
       - name: Install molecule.driver
         run: |
           make install
