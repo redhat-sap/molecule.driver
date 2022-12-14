@@ -40,15 +40,16 @@
     #   loop: "{{ molecule_yml.services.storageaccounts }}"
     #   loop_control:
     #     loop_var: storageaccount
+
     - name: Create ~/.ssh directory if it does not exist
       ansible.builtin.file:
-        path: ~/.ssh/
+        path: "{{ (ssh_private_key_path | default(ssh_private_key_path_default)) | dirname }}"
         state: directory
         mode: '0700'
 
     - name: Generate an OpenSSH keypair
       community.crypto.openssh_keypair:
-        path: ~/.ssh/id_rsa
+        path: "{{ ( ssh_private_key_path | default(ssh_private_key_path_default) ) }}"
 
     - name: Create instances
       ansible.builtin.include_tasks: azure/tasks/create_instance.yml
