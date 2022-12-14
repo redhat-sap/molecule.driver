@@ -80,9 +80,9 @@
       loop_control:
         loop_var: instance
 
-  # TODO: delegate LVM configuration to newly created Azure hosts
-  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_delegation.html
-  # or maybe call another list of tasks from here passing list of hosts in the loop to execute all the tasks on each hosts
+    # TODO: delegate LVM configuration to newly created Azure hosts
+    # https://docs.ansible.com/ansible/latest/user_guide/playbooks_delegation.html
+    # or maybe call another list of tasks from here passing list of hosts in the loop to execute all the tasks on each hosts
 
     - when: azure_molecule_servers.changed | default(false) | bool
       block:
