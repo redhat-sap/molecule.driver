@@ -59,11 +59,6 @@
   command: whoami
   register: current_user
 
-- name: Print admin_username
-
-  ansible.builtin.debug:
-    msg: "{{ current_user.stdout }}"
-
 - name: Set authorized key took from file
   ansible.posix.authorized_key:
     user: "{{ current_user.stdout }}"
