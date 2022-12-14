@@ -55,16 +55,6 @@
     virtual_network_name: "{{ item.virtualnetwork_name |
       default(azure_rm_virtualnetwork_name_default) }}"
 
-- name: Find admin_username
-  command: whoami
-  register: current_user
-
-- name: Set authorized key took from file
-  ansible.posix.authorized_key:
-    user: "{{ current_user.stdout }}"
-    state: present
-    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-
 - name: Create instance
   azure.azcollection.azure_rm_virtualmachine:
     resource_group: "{{ item.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
