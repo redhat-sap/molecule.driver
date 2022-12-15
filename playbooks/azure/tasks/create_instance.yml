@@ -24,7 +24,7 @@
 
 - name: Get info for resource group
   azure.azcollection.azure_rm_resourcegroup_info:
-    name:  "{{ item.resourcegroup_name |
+    name: "{{ item.resourcegroup_name |
       default (azure_rm_resourcegroup_name_default) }}"
   register: _
 

@@ -43,7 +43,7 @@ jobs:
 
       - name: Clean up
         run: |
-          make remove
+          make clean
 
       - uses: azure/login@v1
         with:
