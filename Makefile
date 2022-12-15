@@ -11,10 +11,9 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-VERSION=0.3.0
+VERSION = 0.0.0 # default value
 
 .DEFAULT_GOAL:=help
-
 
 .PHONY: help
 help: ## Display this help
@@ -22,11 +21,15 @@ help: ## Display this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) }' $(MAKEFILE_LIST)
 
 # Developer convenience targets
-
-build:  ## Build ansible-galaxy collection
+build: ## Build ansible-galaxy collection
 	ansible-galaxy collection build --force
 
-install: build
+.PHONY get-version:
+get-version: ## Get version from galaxy.yml file
+	$(eval VERSION=$(shell grep version: galaxy.yml | awk -F ':' '{print $$2}' | tr -d '[:space:]' ))
+	@echo Galaxy version is: ${VERSION}
+
+install: get-version build ## Install molecule.driver collection
 	ansible-galaxy collection install --force molecule-driver-${VERSION}.tar.gz
 
 clean: ## Remove all auto-generated files
@@ -50,4 +53,3 @@ tests: ## Run molecule tests
 .PHONY: install-requirements-dev ## Install python requirements
 install-requirements-dev:
 	pip install -r requirements-dev.txt
-
