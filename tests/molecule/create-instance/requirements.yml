@@ -11,18 +11,10 @@
 #
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
-
-- name: Stop / Backup / Restore
-  ansible.builtin.import_playbook: "molecule.driver.azure_{{ lookup('ansible.builtin.env','ACTION') | lower }}"
-
-# - name: Start (Create)
-#   ansible.builtin.import_playbook: molecule.driver.azure_create
-#   when: ansible.builtin.lookup('env','ACTION') | lower == 'start'
-
-# - name: Backup
-#   ansible.builtin.import_playbook: molecule.driver.azure_backup
-#   when: ansible.builtin.lookup('env','ACTION') | lower == 'backup'
-
-# - name: Restore
-#   ansible.builtin.import_playbook: molecule.driver.azure_restore
-#   when: ansible.builtin.lookup('env','ACTION') | lower == 'restore'
+# roles:
+#   - name: darkraiden.ansible-pip
+collections:
+  - name: git@github.com:redhat-sap/molecule.driver.git
+    type: git
+    version: main
+  - name: azure.azcollection

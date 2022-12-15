@@ -11,31 +11,25 @@ driver:
   name: molecule-driver-azure
 
 platforms:
-  - name: spot-instance
-    location: westeurope
-    resourcegroup_name: molecule-test
-    priority: Spot
-    eviction_policy: Deallocate
-    vm_size: Standard_E2s_v5
-    marketplace_image:
-      publisher: redhat
-      offer: "rhel-sap-apps"
-      sku: "8_6"
-      version: latest
-  - name: instance
+  - name: instance-creation-test
     location: westeurope
     resourcegroup_name: molecule-test
     vm_size: Standard_B1s
     marketplace_image:
+      offer: rhel-sap-apps
       publisher: redhat
-      offer: "rhel-sap-apps"
-      sku: "8_6"
+      sku: 79sapapps-gen2
       version: latest
+    data_disks:
+      - lun: 0
+        disk_size_gb: 1
+        storage_account_type: Premium_LRS
+        filesystem: xfs
+        path: /usr/molecule-test
 
 scenario:
   create_sequence:
     - destroy
-    - create
     - create
   converge_sequence: []
   test_sequence:
@@ -48,7 +42,6 @@ scenario:
   destroy_sequence:
     - destroy
 
-
 provisioner:
   name: ansible
   playbooks:
@@ -60,3 +53,6 @@ provisioner:
 verifier:
   name: ansible
 
+lint: |
+  set -e
+  yamllint .

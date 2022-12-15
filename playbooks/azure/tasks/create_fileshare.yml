@@ -19,3 +19,4 @@
     quota: "{{ fileshare.quota }}"
     resource_group: "{{ storageaccount.resource_group | default(azure_rm_resourcegroup_name_default) }}"
     state: present
+

@@ -11,19 +11,40 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-build:
-	ansible-galaxy collection build --force
-install: build
-	ansible-galaxy collection install --force molecule-driver-0.1.0.tar.gz
-remove:
-	rm -rf /Users/ksatarin/.ansible/collections/ansible_collections/molecule/drive
+VERSION=0.1.0
 
-yamllint:
+.DEFAULT_GOAL:=help
+
+
+.PHONY: help
+help: ## Display this help
+	@echo Makefile for molecule.driver project
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) }' $(MAKEFILE_LIST)
+
+# Developer convenience targets
+
+build:  ## Build ansible-galaxy collection
+	ansible-galaxy collection build --force
+
+install: build
+	ansible-galaxy collection install --force molecule-driver-${VERSION}.tar.gz
+
+clean: ## Remove all auto-generated files
+	rm -rf ~/.ansible/collections/ansible_collections/molecule/driver
+
+.PHONY: yamllint 
+yamllint: ## Run linter for YAML files
 	yamllint .
 
-ansible-lint:
-	ansible-lint
+.PHONY: ansible-lint 
+ansible-lint: ## Run ansible-lint
+	ansible-lint roles/
 
 .PHONY: lint
+lint: ansible-lint yamllint ## Execute yamllint and ansible-lint target
 
-lint: ansible-lint yamllint
+.PHONY: tests
+tests: ## Run molecule tests
+	./hack/tests.sh
+
+$(VERBOSE).SILENT:
