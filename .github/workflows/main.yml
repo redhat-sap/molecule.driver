@@ -1,0 +1,82 @@
+---
+name: Molecule test scenarios
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario:
+          - instance_plan
+          - spot
+        python-version:
+          - "3.8"
+          # - "3.9"
+          # - "3.10"
+    steps:
+      - name: ⤵️ Check out molecule.driver
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Install python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Python dependencies
+        uses: py-actions/py-dependency-install@v4
+        with:
+          path: "./requirements-dev.txt"
+
+      - name: Install hacked molecule
+        run: |
+          python3 -m pip install -U git+https://github.com/gciavarrini/molecule@disable-validation
+
+      - name: Clean up
+        run: |
+          make remove
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Verify az login status
+        run: |
+          az webapp list --query "[?state=='Running']"
+
+      - name: Install molecule.driver
+        run: |
+          make install
+
+      - name: ⚙ Run molecule tests
+        working-directory: ./tests
+        run: |
+          echo "Testing scenario ${{ matrix.scenario }}"
+          molecule test -s ${{ matrix.scenario }}
+
+  Lint:
+    name: Lint code
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code
+        uses: actions/checkout@v3
+
+      - name: Install Python dependencies
+        uses: py-actions/py-dependency-install@v4
+        with:
+          path: "./requirements-dev.txt"
+
+      - name: 🚀 Run ansible-lint
+        run: make ansible-lint
+
+      - name: 🚀 Run yamllint
+        run: make yamllint

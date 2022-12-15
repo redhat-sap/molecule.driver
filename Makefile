@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-VERSION=0.1.0
+VERSION=0.2.0
 
 .DEFAULT_GOAL:=help
 
@@ -38,7 +38,7 @@ yamllint: ## Run linter for YAML files
 
 .PHONY: ansible-lint 
 ansible-lint: ## Run ansible-lint
-	ansible-lint roles/
+	ansible-lint .
 
 .PHONY: lint
 lint: ansible-lint yamllint ## Execute yamllint and ansible-lint target
@@ -47,4 +47,7 @@ lint: ansible-lint yamllint ## Execute yamllint and ansible-lint target
 tests: ## Run molecule tests
 	./hack/tests.sh
 
-$(VERBOSE).SILENT:
+.PHONY: install-requirements-dev ## Install python requirements
+install-requirements-dev:
+	pip install -r requirements-dev.txt
+

@@ -45,7 +45,8 @@
 - name: Create volume group
   community.general.lvg:
     vg: "vg-lun{{ item.lun }}"
-    pvs: "/dev/disk/azure/scsi1/lun{{ item.lun }}-part1"  # create pv for partition, not disk. And there is only one partition
+    # create pv for partition, not disk. And there is only one partition
+    pvs: "/dev/disk/azure/scsi1/lun{{ item.lun }}-part1"
     # pesize: 16 # TODO: what is it? Will be using default for time beeing
   become: true
   become_user: root
@@ -54,7 +55,7 @@
   community.general.lvol:
     vg: "vg-lun{{ item.lun }}"
     lv: "lv-lun{{ item.lun }}"
-      # size: "{{ item.disk_size_gb }}g"
+    # size: "{{ item.disk_size_gb }}g"
     size: 100%FREE
     force: true
   become: true

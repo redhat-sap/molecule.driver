@@ -29,17 +29,27 @@
       ansible.builtin.include_vars:
         file: azure/defaults/main.yml
 
-  # - name: Create storage accounts
-  #   ansible.builtin.include_tasks: azure/tasks/create_storageaccount.yml
-  #   loop: "{{ molecule_yml.services.storageaccounts }}"
-  #   loop_control:
-  #     loop_var: storageaccount
+    # - name: Create storage accounts
+    #   ansible.builtin.include_tasks: azure/tasks/create_storageaccount.yml
+    #   loop: "{{ molecule_yml.services.storageaccounts }}"
+    #   loop_control:
+    #     loop_var: storageaccount
 
-  # - name: Create file shares (for each storage account)
-  #   ansible.builtin.include_tasks: azure/tasks/create_fileshares.yml
-  #   loop: "{{ molecule_yml.services.storageaccounts }}"
-  #   loop_control:
-  #     loop_var: storageaccount
+    # - name: Create file shares (for each storage account)
+    #   ansible.builtin.include_tasks: azure/tasks/create_fileshares.yml
+    #   loop: "{{ molecule_yml.services.storageaccounts }}"
+    #   loop_control:
+    #     loop_var: storageaccount
+
+    - name: Create ~/.ssh directory if it does not exist
+      ansible.builtin.file:
+        path: "{{ (ssh_private_key_path | default(ssh_private_key_path_default)) | dirname }}"
+        state: directory
+        mode: '0700'
+
+    - name: Generate an OpenSSH keypair
+      community.crypto.openssh_keypair:
+        path: "{{ ( ssh_private_key_path | default(ssh_private_key_path_default) ) }}"
 
     - name: Create instances
       ansible.builtin.include_tasks: azure/tasks/create_instance.yml
@@ -70,9 +80,9 @@
       loop_control:
         loop_var: instance
 
-  # TODO: delegate LVM configuration to newly created Azure hosts
-  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_delegation.html
-  # or maybe call another list of tasks from here passing list of hosts in the loop to execute all the tasks on each hosts
+    # TODO: delegate LVM configuration to newly created Azure hosts
+    # https://docs.ansible.com/ansible/latest/user_guide/playbooks_delegation.html
+    # or maybe call another list of tasks from here passing list of hosts in the loop to execute all the tasks on each hosts
 
     - when: azure_molecule_servers.changed | default(false) | bool
       block:

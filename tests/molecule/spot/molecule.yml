@@ -39,6 +39,7 @@ scenario:
     - create
   converge_sequence: []
   test_sequence:
+    - dependency
     - destroy
     - create
     - create
@@ -59,4 +60,3 @@ provisioner:
     destroy: destroy.yml
 verifier:
   name: ansible
-

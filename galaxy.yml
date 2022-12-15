@@ -34,7 +34,10 @@ license_file: 'LICENSE'
 
 tags: [molecule, driver, azure]
 
-dependencies: {}
+dependencies: {
+  'azure.azcollection': '1.14.0',
+  'community.crypto': '2.9.0'
+}
 
 repository: https://github.com/redhat-sap/molecule.driver
 

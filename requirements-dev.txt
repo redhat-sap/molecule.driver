@@ -1,0 +1,4 @@
+ansible
+molecule-driver-azure
+ansible-lint
+yamllint
