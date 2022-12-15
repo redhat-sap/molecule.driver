@@ -14,21 +14,21 @@
 
 - name: Create managed disk
   azure.azcollection.azure_rm_manageddisk:
-    create_option: "{{ item.create_option | default('empty') }}"
-    # TODO: add create_option to defaults
+    create_option: "{{ item.create_option |
+      default(azure_rm_manageddisk_create_option_default) }}"
     disk_size_gb: "{{ item.disk_size_gb }}"
     location: "{{ item.location | default(omit) }}" # omit - location will be from resource group
     lun: "{{ item.lun }}"
     managed_by: "{{ instance.name }}"
     name: "{{ instance.name }}_data_disk{{ item.lun }}"
-    os_type: "{{ item.create_option | default('linux') }}"
-    resource_group: "{{ instance.resourcegroup_name }}"
-    # TODO: add default value for resourcegroup_name,
-    # so disk will be created even if no resource group is specified for instance
+    os_type: "{{ item.create_option |
+      default(azure_rm_manageddisk_os_type_default) }}"
+    resource_group: "{{ instance.resourcegroup_name |
+      default(azure_rm_resourcegroup_name_default) }}"
     source_uri: "{{ instance.source_uri | default(omit) }}"
     state: present
-    storage_account_type: "{{ item.storage_account_type }}"
-    # TODO: add default value for storage_account_type
+    storage_account_type: "{{ item.storage_account_type |
+      default(azure_rm_manageddisk_storage_account_type_default) }}"
     # tags:
     zone: "{{ item.zone | default(omit) }}"
   with_items: "{{ instance.data_disks }}"

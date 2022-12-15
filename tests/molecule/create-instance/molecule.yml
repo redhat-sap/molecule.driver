@@ -1,12 +1,4 @@
 ---
-dependency:
-  name: shell
-  # yamllint disable rule:line-length
-  command: |
-    ansible-galaxy install -r $MOLECULE_SCENARIO_DIRECTORY/requirements.yml
-    pip install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
-  # yamllint enable rule:line-length
-
 driver:
   name: molecule-driver-azure
 
@@ -30,6 +22,7 @@ platforms:
 scenario:
   create_sequence:
     - destroy
+    - create
     - create
   converge_sequence: []
   test_sequence:
