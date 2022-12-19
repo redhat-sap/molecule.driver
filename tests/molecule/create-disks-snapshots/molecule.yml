@@ -34,7 +34,7 @@ scenario:
     - create
     - create
     - dependency
-    - side_effect
+    - side_effect ../../../playbooks/azure_backup.yml    
     - verify
     - destroy
     - destroy
