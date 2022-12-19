@@ -31,3 +31,5 @@ azure_rm_ssh_user_default: molecule
 
 azure_rm_virtualmachine_async_default: 7200
 azure_rm_virtualmachine_poll_default: 60
+
+azure_rm_snapshot_suffix: "_default"
