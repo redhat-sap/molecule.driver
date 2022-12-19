@@ -39,7 +39,7 @@ clean: ## Remove all auto-generated files
 yamllint: ## Run linter for YAML files
 	yamllint .
 
-.PHONY: ansible-lint 
+.PHONY: ansible-lint
 ansible-lint: ## Run ansible-lint
 	ansible-lint .
 
