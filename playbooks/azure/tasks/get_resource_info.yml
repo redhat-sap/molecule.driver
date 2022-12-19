@@ -1,0 +1,23 @@
+---
+#
+# Copyright 2022 Red Hat, Project Atmosphere
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <https://www.gnu.org/licenses/>.
+
+- name: Get facts for one resource
+  azure.azcollection.azure_rm_resource_info:
+    resource_group: "{{ resourcegroup_name }}"
+    resource_name: "{{ snapshot_name }}"
+    resource_type: snapshots
+    provider: compute
+    api_version: "2021-12-01"
+  register: get_snapshot
+  failed_when: get_snapshot.response | selectattr('error', 'defined')
