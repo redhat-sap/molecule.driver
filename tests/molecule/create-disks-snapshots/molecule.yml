@@ -1,0 +1,60 @@
+---
+dependency:
+  name: shell
+  command: |
+    ansible-galaxy install -r $MOLECULE_SCENARIO_DIRECTORY/requirements.yml
+    pip install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
+
+driver:
+  name: molecule-driver-azure
+
+platforms:
+  - name: disks-snapshots-test
+    location: westeurope
+    resourcegroup_name: molecule-test
+    vm_size: Standard_B1s
+    marketplace_image:
+      offer: rhel-sap-apps
+      publisher: redhat
+      sku: 79sapapps-gen2
+      version: latest
+    data_disks:
+      - lun: 0
+        disk_size_gb: 1
+        storage_account_type: Premium_LRS
+        filesystem: xfs
+        path: /usr/molecule-test
+      - lun: 1
+        disk_size_gb: 1
+        storage_account_type: Premium_LRS
+        filesystem: xfs
+        path: /usr/molecule-test
+scenario:
+  create_sequence:
+    - destroy
+    - create
+    - dependency
+  converge_sequence: []
+  test_sequence:
+    - destroy
+    - create
+    - create
+    - dependency
+    - side_effect
+    - verify
+    - destroy
+    - destroy
+  destroy_sequence:
+    - destroy
+
+provisioner:
+  name: ansible
+  playbooks:
+    create: create.yml
+    prepare: prepare.yml
+    converge: converge.yml
+    side-effect: side_effect.yml
+    verify: verify.yml
+    destroy: destroy.yml
+verifier:
+  name: ansible

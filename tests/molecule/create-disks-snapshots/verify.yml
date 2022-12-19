@@ -1,0 +1,20 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Get facts for one managed disk
+      ansible.builtin.include_tasks: ../../../playbooks/azure/tasks/get_managed_disks.yml
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        loop_var: instance
+      register: managed_disks
+
+    - name: Assertions
+      ansible.builtin.assert:
+        that:
+          - item.instance.data_disks is defined
+          - item.instance.data_disks | length == 2
+      loop: "{{ managed_disks.results }}"
