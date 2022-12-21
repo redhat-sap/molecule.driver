@@ -50,6 +50,7 @@
     - name: Generate an OpenSSH keypair
       community.crypto.openssh_keypair:
         path: "{{ ( ssh_private_key_path | default(ssh_private_key_path_default) ) }}"
+        regenerate: never
 
     - name: Create instances
       ansible.builtin.include_tasks: azure/tasks/create_instance.yml
