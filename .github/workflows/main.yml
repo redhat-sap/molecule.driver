@@ -17,6 +17,7 @@ jobs:
         scenario:
           - instance_plan
           - spot
+          - create-disks-snapshots
         python-version:
           - "3.8"
           # - "3.9"
