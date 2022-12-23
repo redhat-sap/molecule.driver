@@ -17,12 +17,13 @@ platforms:
         disk_size_gb: 1
         storage_account_type: Premium_LRS
         filesystem: xfs
-        path: /usr/molecule-test
+        path: /usr/molecule-test0
       - lun: 1
         disk_size_gb: 1
         storage_account_type: Premium_LRS
         filesystem: xfs
-        path: /usr/molecule-test
+        path: /usr/molecule-test1
+
   - name: disks-snap-test2
     location: westeurope
     resourcegroup_name: molecule-test
@@ -38,18 +39,28 @@ platforms:
         storage_account_type: Premium_LRS
         filesystem: xfs
         path: /usr/molecule-test
+
+  - name: disks-snap-test3
+    location: westeurope
+    resourcegroup_name: molecule-test
+    vm_size: Standard_B1s
+    marketplace_image:
+      offer: rhel-sap-apps
+      publisher: redhat
+      sku: 79sapapps-gen2
+      version: latest
+
 scenario:
   create_sequence:
     - destroy
     - create
-    - dependency
-  converge_sequence: []
+  converge_sequence:
+    - side_effect backup.yml
   test_sequence:
     - destroy
     - create
     - create
-    - dependency
-    - side_effect ../../../playbooks/azure_backup.yml    
+    - side_effect backup.yml
     - verify
     - destroy
     - destroy

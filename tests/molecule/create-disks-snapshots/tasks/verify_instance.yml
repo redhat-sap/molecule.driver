@@ -12,10 +12,17 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-- name: Backup managed disks
-  vars:
-    data_disks: "{{ hostvars[disks.instance.name].metadata_instance_info.json.compute.storageProfile.dataDisks }}"
-  ansible.builtin.include_tasks: backup_managed_disk.yml
-  loop: "{{ data_disks }}"
+
+- name: Ensure all default snapshots exist for the instance
+  azure.azcollection.azure_rm_resource_info:
+    resource_group: "{{ resourcegroup_name }}"
+    resource_name: "{{ snapshot_name }}"
+    resource_type: snapshots
+    provider: compute
+    api_version: "2021-12-01"
+  loop: "{{ instance.data_disks }}"
+  when: instance.data_disks is defined
   loop_control:
-    loop_var: dataDisk
+    loop_var: disk
+  register: _
+  failed_when: _.response | selectattr('error', 'defined')

@@ -12,14 +12,16 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-- name: Get snapshots
-  ansible.builtin.include_tasks: ./tasks/delete_snapshot.yml
+- name: Backup managed disks for an instance
+  when: instance.data_disks is defined
+
+  ansible.builtin.include_tasks: azure/tasks/backup_managed_disk.yml
   vars:
-    snap_location: "{{ resource_info.instance }}"
-    resourcegroup_name: "{{ resource_info.instance.resourcegroup_name }}"
-    managed_disk_name: "{{ data_disk.managedDisk.id.split('/') | last }}"
-    snap_name: "{{ managed_disk_name }}_default"
-  loop: "{{ hostvars[resource_info.instance.name].metadata_instance_info.json.compute.storageProfile.dataDisks }}"
+    resourcegroup_name: "{{ instance.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
+    data_disk_name: "{{ instance.name }}_data_disk{{ disk.lun }}"
+    snapshot_name: "{{ data_disk_name }}_{{ azure_rm_snapshot_suffix }}"
+    location: "{{ instance.location }}"
+
+  loop: "{{ instance.data_disks }}"
   loop_control:
-    loop_var: data_disk
-  register: snapshots
+    loop_var: 'disk'
