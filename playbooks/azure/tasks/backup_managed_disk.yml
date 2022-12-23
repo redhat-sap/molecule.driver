@@ -19,10 +19,13 @@
   register: _
 
 - name: Create a snapshot by copying an existing managed disk
+  vars:
+    managed_disk_name: "{{ dataDisk.managedDisk.id.split('/') | last }}"
+    snap_id: "{{ managed_disk_name }}_{{ azure_rm_snapshot_suffix | default('default') }}"
   azure.azcollection.azure_rm_snapshot:
-    resource_group: "{{ resourcegroup_name }}"
-    name: "{{ snapshot_name }}"
-    location: "{{ location }}"
+    resource_group: "{{ disks.instance.resourcegroup_name }}"
+    name: "{{ snap_id }}"
+    location: "{{ disks.instance.location }}"
     creation_data:
       create_option: "Copy"
-      source_id: "{{ (_.ansible_info.azure_managed_disk | first).id }}"
+      source_id: "{{ dataDisk.managedDisk.id }}"
