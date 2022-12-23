@@ -35,7 +35,7 @@ install: get-version build ## Install molecule.driver collection
 clean: ## Remove all auto-generated files
 	rm -rf ~/.ansible/collections/ansible_collections/molecule/driver
 
-.PHONY: yamllint 
+.PHONY: yamllint
 yamllint: ## Run linter for YAML files
 	yamllint .
 

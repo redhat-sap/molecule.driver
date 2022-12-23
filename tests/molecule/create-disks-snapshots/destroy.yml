@@ -12,48 +12,5 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-- name: Get instances metadata  ## TODO execute if instance exists
-  ## fatal: [disks-snapshots-test]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: ssh: connect to host 52.174.242.13 port 22: Connection timed out", "unreachable": true}
-  hosts: all:!localhost
-  gather_facts: false
-  become: true
-  become_user: root
-  no_log: "{{ molecule_no_log }}"
-  vars:
-    metadata_server: http://169.254.169.254/metadata
-    metadata_instance_endpoint: /instance?api-version=2021-12-13
-
-  tasks:
-    - name: Get instance metadata
-      ansible.builtin.uri:
-        url: "{{ metadata_server }}{{ metadata_instance_endpoint }}"
-        headers:
-          Metadata: true
-      register: metadata_instance_info
-      # this ignore is necessary when the instance doen't exist
-      ignore_unreachable: true
-
-- name: Destroy default managed disks snapshots
-  hosts: localhost
-  gather_facts: false
-  tasks:
-    - name: Get facts managed disks
-      ansible.builtin.include_tasks: ../../../playbooks/azure/tasks/get_managed_disks.yml
-      loop: "{{ molecule_yml.platforms }}"
-      loop_control:
-        loop_var: instance
-      register: managed_disks
-      when: hostvars[instance.name].metadata_instance_info is defined
-
-    - name: Delete default snapshots
-      ansible.builtin.include_tasks: ./tasks/delete_default_snapshots.yml
-      loop: "{{ managed_disks.results }}"
-      loop_control:
-        loop_var: resource_info
-      when:
-        - managed_disks is defined
-        - managed_disks.results | length > 0
-        - hostvars[resource_info.instance.name].metadata_instance_info.json is defined
-
 - name: Destroy
   ansible.builtin.import_playbook: molecule.driver.azure_destroy

@@ -12,14 +12,17 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-- name: Create a snapshot by copying an existing managed disk
-  vars:
-    managed_disk_name: "{{ dataDisk.managedDisk.id.split('/') | last }}"
-    snap_id: "{{ managed_disk_name }}_{{ azure_rm_snapshot_suffix | default('default') }}"
-  azure.azcollection.azure_rm_snapshot:
-    resource_group: "{{ disks.instance.resourcegroup_name }}"
-    name: "{{ snap_id }}"
-    location: "{{ disks.instance.location }}"
-    creation_data:
-      create_option: "Copy"
-      source_id: "{{ dataDisk.managedDisk.id }}"
+    - name: Get managed disk info
+      azure.azcollection.azure_rm_manageddisk_info:
+        name: "{{ data_disk_name }}"
+        resource_group: "{{ resourcegroup_name }}"
+      register: _
+
+    - name: Create a snapshot by copying an existing managed disk
+      azure.azcollection.azure_rm_snapshot:
+        resource_group: "{{ resourcegroup_name }}"
+        name: "{{ snapshot_name }}"
+        location: "{{ location }}"
+        creation_data:
+          create_option: "Copy"
+          source_id: "{{ (_.ansible_info.azure_managed_disk | first).id }}"

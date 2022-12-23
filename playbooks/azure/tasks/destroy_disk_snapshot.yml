@@ -12,9 +12,9 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-- name: Delete snapshot
+- name: Delete default snapshot of data disk
   azure.azcollection.azure_rm_snapshot:
     resource_group: "{{ resourcegroup_name }}"
-    name: "{{ snap_name }}"
-    location: "{{ snap_location }}"
+    name: "{{ snapshot_name }}"
+    location: "{{ location }}"
     state: absent

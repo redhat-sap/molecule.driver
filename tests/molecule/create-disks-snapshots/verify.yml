@@ -12,40 +12,20 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-- name: Get instances metadata
-  hosts: all:!localhost
-  gather_facts: true
-  become: true
-  become_user: root
-  no_log: "{{ molecule_no_log }}"
-  vars:
-    metadata_server: http://169.254.169.254/metadata
-    metadata_instance_endpoint: /instance?api-version=2021-12-13
-
-  tasks:
-    - name: Get instance metadata
-      ansible.builtin.uri:
-        url: "{{ metadata_server }}{{ metadata_instance_endpoint }}"
-        headers:
-          Metadata: true
-      register: metadata_instance_info
-
 - name: Verify
   hosts: localhost
   gather_facts: false
   no_log: "{{ molecule_no_log }}"
 
   tasks:
-    - name: Get facts managed disks
-      ansible.builtin.include_tasks: ../../../playbooks/azure/tasks/get_managed_disks.yml
+
+    - name: Run verify for each instance
+      vars:
+        resourcegroup_name: "{{ instance.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
+        data_disk_name: "{{ instance.name }}_data_disk{{ disk.lun }}"
+        snapshot_name: "{{ data_disk_name }}_default"
+        location: "{{ instance.location }}"
+      ansible.builtin.include_tasks: tasks/verify_instance.yml
       loop: "{{ molecule_yml.platforms }}"
       loop_control:
         loop_var: instance
-      register: managed_disks
-
-    - name: Get snapshots
-      ansible.builtin.include_tasks: ./tasks/get_resources_info.yml
-      loop: "{{ managed_disks.results }}"
-      loop_control:
-        loop_var: resource_info
-      register: _
