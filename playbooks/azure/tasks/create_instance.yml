@@ -75,6 +75,7 @@
         key_data: "{{ lookup('file', ssh_public_key_path |
           default(ssh_public_key_path_default)) }}"
     image: "{{ item.marketplace_image }}"
+    license_type: "{{ item.license_type | default(omit) }}"
     plan: "{{ item.plan | default(omit) }}"
     state: present
   register: server

@@ -1,0 +1,33 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  become: true
+  become_user: root
+  no_log: "{{ molecule_no_log }}"
+  vars:
+    metadata_server: http://169.254.169.254/metadata
+    metadata_instance_endpoint: /instance?api-version=2021-12-13
+
+  tasks:
+    - name: Ensure that we are running RHEL 8.6 on Azure
+      ansible.builtin.assert:
+        that:
+          # "7783-7084-3265-9085-8269-3286-77" special value for Azure
+          - ansible_facts["chassis_asset_tag"] == "7783-7084-3265-9085-8269-3286-77"
+          - ansible_facts["distribution_major_version"] == "8"
+          - ansible_facts["distribution_version"] == "8.6"
+          - ansible_facts["distribution_release"] == "Ootpa"
+
+    - name: Get instance metadata
+      ansible.builtin.uri:
+        url: "{{ metadata_server }}{{ metadata_instance_endpoint }}"
+        headers:
+          Metadata: true
+      register: _
+
+    - name: Assert that instance has been properly created
+      ansible.builtin.assert:
+        that:
+          - _.json.compute.name == 'custom-image'
+          - _.json.compute.resourceGroupName == 'molecule-test'

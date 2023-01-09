@@ -66,10 +66,24 @@ OS managed disk storage type. Possible values (from cheapest to more expensive):
 **`marketplace_image`**
 
 Dictionary with key-value pairs that define Azure OS image.
+
+```text
     offer: rhel-sap-apps
     publisher: redhat
     sku: 79sapapps-gen2
     version: latest
+```
+
+Or in case Azure VM with custom image is requied.
+
+```text
+    name: "rhel8.6byos_vhd"
+    resource_group: packer
+```
+
+NOTE for whatever reason all custom image, VM resource group and VM should be in the same region. Otherwise Azure will fail - could not find custom image.
+
+if custom image is BYOS image - `license_type` parameter is required. See below.
 
 To find all possible key pairs for `marketplace_image` use following command
 
@@ -192,6 +206,22 @@ Eviction policy for spot VM. Possible values: `Deallocate`, `Delete`.
 
 See <https://azure.microsoft.com/en-us/products/virtual-machines/spot/>.
 
+**`license_type`**
+
+Only required when provisioning custom images with BYOS license.
+
+On-premise license for the image or disk.
+
+Choices:
+
+* "Windows_Server"
+
+* "Windows_Client"
+
+* "RHEL_BYOS"
+
+* "SLES_BYOS"
+
 ## Example
 
 Here is an example that includes majority of variables.
@@ -226,9 +256,21 @@ platforms:
       publisher: redhat
       sku: 79sapapps-gen2
       version: "latest"
+  - name: vm3
+    location: northeurope
+    vm_size: Standard_B1s
+    managed_disk_type: Standard_LRS
+    marketplace_image:
+      name: "rhel8.6byos_vhd"
+      resource_group: packer
+    license_type: "RHEL_BYOS"
 ```
 
-This will create two virtual machines on Azure with respective parameters. Please note that for second VM only required parameters are specified.
+This will create three virtual machines on Azure with respective parameters.
+
+Please note that for second VM only required parameters are specified.
+
+Third VM is created using custom image, in variable `marketplace_image` custom image name and resource group name (where custom image is located) are provided.
 
 ## LICENSE
 
