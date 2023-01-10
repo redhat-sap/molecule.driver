@@ -20,7 +20,7 @@
       kind: "{{ storageaccount.kind }}"
       account_type: "{{ storageaccount.account_type }}"
       access_tier: "{{ storageaccount.access_tier | default(omit) }}"
-      location: "{{ storageaccount.location }}"
+      location: "{{ storageaccount.location | default(omit) }}" # omit - location will be from resource group
       minimum_tls_version: "{{ storageaccount.minimum_tls_version | default(omit) }}"
       name: "{{ storageaccount.name }}"
       # network_acls:

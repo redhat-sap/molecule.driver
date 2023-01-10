@@ -58,6 +58,7 @@
 - name: Create instance
   azure.azcollection.azure_rm_virtualmachine:
     resource_group: "{{ item.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
+    location: "{{ item.location | default(omit) }}" # omit - location will be from resource group
     name: "{{ item.name }}"
     priority: "{{ item.priority | default(azure_rm_priority_default) }}"
     eviction_policy: "{% if item.priority is defined %}{{ item.eviction_policy | default(azure_rm_eviction_policy_default) }}{% else %}{{ omit }}{% endif %}"

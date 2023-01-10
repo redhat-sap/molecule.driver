@@ -8,6 +8,8 @@
 
 **`location`** - Azure region for the instance. Required. No default value.
 
+Location is not required if resource group already exists. In that case all the resources will be created in location of resource group.
+
 Possible values can be listed with following command:
 
 ```bash
