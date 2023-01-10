@@ -17,7 +17,7 @@
     create_option: "{{ item.create_option | default('empty') }}"
     # TODO: add create_option to defaults
     disk_size_gb: "{{ item.disk_size_gb }}"
-    location: "{{ instance.location }}"
+    location: "{{ item.location | default(omit) }}" # omit - location will be from resource group
     lun: "{{ item.lun }}"
     managed_by: "{{ instance.name }}"
     name: "{{ instance.name }}_data_disk{{ item.lun }}"
