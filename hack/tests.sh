@@ -5,8 +5,8 @@ TESTS=tests
 
 for f in "$TESTS"/molecule/*; do
     if [ -d "$f" ]; then
-        cd "$TESTS"/molecule
-        molecule test -s $(basename "$f")
+        cd "$TESTS"
+        molecule test -s "$(basename "$f")"
         cd -
     fi
 done

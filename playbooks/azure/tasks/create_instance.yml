@@ -77,7 +77,8 @@
     image: "{{ item.marketplace_image }}"
     license_type: "{{ item.license_type | default(omit) }}"
     plan: "{{ item.plan | default(omit) }}"
-    state: started
+    state: present
+    started: true
   register: server
   # with_items: "{{ molecule_yml.platforms }}"
   # TODO create async job in instance_create.yml and wait for all jobs to finish in create.yaml
