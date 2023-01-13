@@ -11,3 +11,22 @@
 #
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
+
+- name: Restore
+  hosts: localhost
+  gather_facts: false
+  no_log: "{{ molecule_no_log }}"
+  tasks:
+    - name: Include default variables
+      ansible.builtin.include_vars:
+        file: azure/defaults/main.yml
+
+    - name: Restore managed disks for each instance
+      ansible.builtin.include_tasks: azure/tasks/restore_instance.yml
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        loop_var: instance
+
+- name: Create
+  no_log: "{{ molecule_no_log }}"
+  ansible.builtin.import_playbook: azure_create.yml

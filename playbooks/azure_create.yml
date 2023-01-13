@@ -57,7 +57,7 @@
       with_items: "{{ molecule_yml.platforms }}"
 
     - name: Create managed disks
-      ansible.builtin.include_tasks: azure/tasks/create_managed_disk.yml
+      ansible.builtin.include_tasks: azure/tasks/create_managed_disks.yml
       with_items: "{{ molecule_yml.platforms }}"
       loop_control:
         loop_var: instance

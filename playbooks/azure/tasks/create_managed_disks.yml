@@ -12,16 +12,9 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-- name: Deallocate
-  hosts: localhost
-  gather_facts: false
-  no_log: "{{ molecule_no_log }}"
-
-  tasks:
-    - name: Include default variables
-      ansible.builtin.include_vars:
-        file: azure/defaults/main.yml
-
-    - name: Deallocate instances
-      ansible.builtin.include_tasks: azure/tasks/deallocate_instance.yml
-      with_items: "{{ molecule_yml.platforms }}"
+- name: Create managed disks
+  ansible.builtin.include_tasks: create_managed_disk.yml
+  loop: "{{ instance.data_disks }}"
+  loop_control:
+    loop_var: disk
+  when: instance.data_disks is defined

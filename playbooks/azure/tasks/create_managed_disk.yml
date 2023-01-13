@@ -12,24 +12,30 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
+- name: Check if managed disk exists
+  azure.azcollection.azure_rm_manageddisk_info:
+    name: "{{ instance.name }}_data_disk{{ disk.lun }}"
+    resource_group: "{{ instance.resourcegroup_name |
+      default(azure_rm_resourcegroup_name_default) }}"
+  register: _
+
 - name: Create managed disk
   azure.azcollection.azure_rm_manageddisk:
-    create_option: "{{ item.create_option |
+    create_option: "{{ disk.create_option |
       default(azure_rm_manageddisk_create_option_default) }}"
-    disk_size_gb: "{{ item.disk_size_gb }}"
-    location: "{{ item.location | default(omit) }}" # omit - location will be from resource group
-    lun: "{{ item.lun }}"
+    disk_size_gb: "{{ disk.disk_size_gb }}"
+    location: "{{ instance.location | default(omit) }}"  # omit - location will be from resource group
+    lun: "{{ disk.lun }}"
     managed_by: "{{ instance.name }}"
-    name: "{{ instance.name }}_data_disk{{ item.lun }}"
-    os_type: "{{ item.create_option |
+    name: "{{ instance.name }}_data_disk{{ disk.lun }}"
+    os_type: "{{ disk.os_type |
       default(azure_rm_manageddisk_os_type_default) }}"
     resource_group: "{{ instance.resourcegroup_name |
       default(azure_rm_resourcegroup_name_default) }}"
-    source_uri: "{{ instance.source_uri | default(omit) }}"
+    source_uri: "{{ disk.source_uri | default(omit) }}"
     state: present
-    storage_account_type: "{{ item.storage_account_type |
+    storage_account_type: "{{ disk.storage_account_type |
       default(azure_rm_manageddisk_storage_account_type_default) }}"
     # tags:
-    zone: "{{ item.zone | default(omit) }}"
-  with_items: "{{ instance.data_disks }}"
-  when: instance.data_disks is defined
+    zone: "{{ instance.zone | default(omit) }}"
+  when: _.ansible_info.azure_managed_disk | length == 0

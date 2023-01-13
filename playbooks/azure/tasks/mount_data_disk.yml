@@ -25,6 +25,12 @@
 #   debug:
 #     msg: "{{ facts }}"
 
+- name: Collect mounts ansible facts
+  ansible.builtin.setup:
+    gather_subset: mounts
+  become: true
+  become_user: root
+
 - name: Create partition
   community.general.parted:
     device: "/dev/disk/azure/scsi1/lun{{ item.lun }}"
@@ -44,7 +50,7 @@
 
 - name: Create volume group
   community.general.lvg:
-    vg: "vg-lun{{ item.lun }}"
+    vg: "vglun{{ item.lun }}"
     # create pv for partition, not disk. And there is only one partition
     pvs: "/dev/disk/azure/scsi1/lun{{ item.lun }}-part1"
     # pesize: 16 # TODO: what is it? Will be using default for time beeing
@@ -53,35 +59,37 @@
 
 - name: Create logical volume
   community.general.lvol:
-    vg: "vg-lun{{ item.lun }}"
-    lv: "lv-lun{{ item.lun }}"
+    vg: "vglun{{ item.lun }}"
+    lv: "lvlun{{ item.lun }}"
     # size: "{{ item.disk_size_gb }}g"
-    size: 100%FREE
+    size: 100%VG
     force: true
   become: true
   become_user: root
 
-- name: Create directory to mount disk if does not exist
-  ansible.builtin.file:
-    path: "{{ item.path }}"
-    state: directory
-    mode: '0755'
-    # TODO: add path_mode to molecule.yml disk parameters
-  become: true
-  become_user: root
+- name: Manage filesystems and mounts
+  vars:
+    vg: "vglun{{ item.lun }}"
+    lv: "lvlun{{ item.lun }}"
+    dev_mapper_name: "/dev/mapper/{{ vg }}-{{ lv }}"
+  when: ansible_facts.mounts | selectattr('device', '==', dev_mapper_name) | length == 0
+  # https://stackoverflow.com/questions/69947414/ansible-check-if-disk-is-mounted-if-not-format-it
+  block:
 
-- name: Format the filesystem
-  community.general.filesystem:
-    fstype: "{{ item.filesystem }}"
-    dev: "/dev/vg-lun{{ item.lun }}/lv-lun{{ item.lun }}"
-  become: true
-  become_user: root
+    - name: Format the filesystem (if not mounted)
+      community.general.filesystem:
+        fstype: "{{ item.filesystem }}"
+        dev: "{{ dev_mapper_name }}"
+        resizefs: true
+        state: present
+      become: true
+      become_user: root
 
-- name: Mount the logical volume
-  ansible.posix.mount:
-    path: "{{ item.path }}"
-    src: "/dev/vg-lun{{ item.lun }}/lv-lun{{ item.lun }}"
-    fstype: "{{ item.filesystem }}"
-    state: mounted
-  become: true
-  become_user: root
+    - name: Mount the logical volume (if not mounted)
+      ansible.posix.mount:
+        path: "{{ item.path }}"
+        src: "{{ dev_mapper_name }}"
+        fstype: "{{ item.filesystem }}"
+        state: mounted
+      become: true
+      become_user: root

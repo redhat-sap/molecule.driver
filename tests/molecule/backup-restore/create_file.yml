@@ -1,6 +1,6 @@
 ---
 #
-# Copyright 2022 Red Hat, Project Atmosphere
+# Copyright 2022 Red Hat inc. Project Atmoshere
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU
 # General Public License as published by the Free Software Foundation, version 3 of the License.
@@ -12,16 +12,14 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-- name: Deallocate
-  hosts: localhost
+- name: Create File
+  hosts: all
   gather_facts: false
-  no_log: "{{ molecule_no_log }}"
-
   tasks:
-    - name: Include default variables
-      ansible.builtin.include_vars:
-        file: azure/defaults/main.yml
-
-    - name: Deallocate instances
-      ansible.builtin.include_tasks: azure/tasks/deallocate_instance.yml
-      with_items: "{{ molecule_yml.platforms }}"
+    - name: Touch a file
+      ansible.builtin.file:
+        path: /usr/molecule-test0/file
+        state: touch
+        mode: '0755'
+      become: true
+      become_user: root

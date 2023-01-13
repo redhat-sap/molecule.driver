@@ -12,28 +12,23 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-# - name: Stop instance before creating snapshots of managed disks
-#   azure.azcollection.azure_rm_virtualmachine:
-#     resource_group: "{{ instance.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
-#     name: "{{ instance.name }}"
-#     state: present
-#     started: false
+- name: Stop instance before restoring managed disks
+  azure.azcollection.azure_rm_virtualmachine:
+    resource_group: "{{ instance.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
+    name: "{{ instance.name }}"
+    state: present
+    started: false
 
-- name: Backup managed disks for an instance
+- name: Restore managed disks for an instance
   when: instance.data_disks is defined
-  ansible.builtin.include_tasks: azure/tasks/backup_managed_disk.yml
+  ansible.builtin.include_tasks: azure/tasks/restore_managed_disk.yml
   vars:
     resourcegroup_name: "{{ instance.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
     data_disk_name: "{{ instance.name }}_data_disk{{ disk.lun }}"
     snapshot_name: "{{ data_disk_name }}_{{ azure_rm_snapshot_suffix }}"
     location: "{{ instance.location | default(omit) }}"
+    storage_account_type: "{{ disk.storage_account_type |
+      default(azure_rm_manageddisk_storage_account_type_default) }}"
   loop: "{{ instance.data_disks }}"
   loop_control:
     loop_var: 'disk'
-
-- name: Start instance after creating snapshots of managed disks
-  azure.azcollection.azure_rm_virtualmachine:
-    resource_group: "{{ instance.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
-    name: "{{ instance.name }}"
-    state: present
-    started: true
