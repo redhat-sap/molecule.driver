@@ -3,17 +3,17 @@
   hosts: spot-instance
   gather_facts: false
   tasks:
-  - name: Get instance metadata
-    ansible.builtin.uri:
-      url: "http://169.254.169.254/metadata/instance?api-version=2021-12-13"
-      headers:
-        metadata: true
-    register: _
-  - name: Assert that this is Spot instance
-    ansible.builtin.assert:
-      that:
-        - _.json.compute.priority == 'Spot'
-        - _.json.compute.evictionPolicy == 'Deallocate'
+    - name: Get instance metadata
+      ansible.builtin.uri:
+        url: "http://169.254.169.254/metadata/instance?api-version=2021-12-13"
+        headers:
+          metadata: true
+      register: _
+    - name: Assert that this is Spot instance
+      ansible.builtin.assert:
+        that:
+          - _.json.compute.priority == 'Spot'
+          - _.json.compute.evictionPolicy == 'Deallocate'
 
 - name: Verify
   hosts: instance

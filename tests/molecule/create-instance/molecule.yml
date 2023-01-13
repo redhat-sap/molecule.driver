@@ -21,14 +21,12 @@ platforms:
 
 scenario:
   create_sequence:
-    - destroy
-    - create
     - create
   converge_sequence: []
   test_sequence:
     - destroy
     - create
-    - create
+    - side_effect create.yml
     - verify
     - destroy
     - destroy

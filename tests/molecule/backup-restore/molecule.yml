@@ -1,16 +1,22 @@
 ---
+dependency:
+  name: shell
+  command: |
+    ansible-galaxy install -r $MOLECULE_SCENARIO_DIRECTORY/requirements.yml
+    pip install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
+
 driver:
   name: molecule-driver-azure
 
 platforms:
-  - name: disks-snap-test1
-    location: westeurope
+  - name: backup-restore-test
     resourcegroup_name: molecule-test
+    # priority: Spot
     vm_size: Standard_B1s
     marketplace_image:
-      offer: rhel-sap-apps
+      offer: rhel-sap-ha
       publisher: redhat
-      sku: 79sapapps-gen2
+      sku: 86sapha-gen2
       version: latest
     data_disks:
       - lun: 0
@@ -24,45 +30,23 @@ platforms:
         filesystem: xfs
         path: /usr/molecule-test1
 
-  - name: disks-snap-test2
-    location: westeurope
-    resourcegroup_name: molecule-test
-    vm_size: Standard_B1s
-    marketplace_image:
-      offer: rhel-sap-apps
-      publisher: redhat
-      sku: 79sapapps-gen2
-      version: latest
-    data_disks:
-      - lun: 0
-        disk_size_gb: 1
-        storage_account_type: Premium_LRS
-        filesystem: xfs
-        path: /usr/molecule-test
-
-  - name: disks-snap-test3
-    location: westeurope
-    resourcegroup_name: molecule-test
-    vm_size: Standard_B1s
-    marketplace_image:
-      offer: rhel-sap-apps
-      publisher: redhat
-      sku: 79sapapps-gen2
-      version: latest
-
 scenario:
   create_sequence:
     - create
   converge_sequence:
     - side_effect backup.yml
+    # - side_effect restore.yml
   test_sequence:
     - destroy
     - create
     - side_effect create.yml
+    - side_effect create_file.yml
     - side_effect backup.yml
+    - side_effect change_file.yml
+    - side_effect restore.yml
     - verify
     - destroy
-    - destroy
+    - side_effect destroy.yml
   destroy_sequence:
     - destroy
 

@@ -20,13 +20,13 @@
   # no_log: false
 
   tasks:
-  - name: Include default variables
-    ansible.builtin.include_vars:
-      file: azure/defaults/main.yml
+    - name: Include default variables
+      ansible.builtin.include_vars:
+        file: azure/defaults/main.yml
 
-  - name: Stop instances
-    ansible.builtin.include_tasks: azure/tasks/stop_instance.yml
-    with_items: "{{ molecule_yml.platforms }}"
+    - name: Stop instances
+      ansible.builtin.include_tasks: azure/tasks/stop_instance.yml
+      with_items: "{{ molecule_yml.platforms }}"
 
 # - when: azure_molecule_servers.changed | default(false) | bool
 #   block:

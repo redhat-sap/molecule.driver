@@ -38,7 +38,7 @@
     resourcegroup_name: "{{ item.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
     data_disk_name: "{{ item.name }}_data_disk{{ disk.lun }}"
     snapshot_name: "{{ data_disk_name }}_{{ azure_rm_snapshot_suffix }}"
-    location: "{{ item.location }}"
+    location: "{{ item.location | default(omit) }}"
   ansible.builtin.include_tasks:
     file: azure/tasks/destroy_disk_snapshot.yml
   loop: "{{ item.data_disks }}"
