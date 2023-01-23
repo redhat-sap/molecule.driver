@@ -6,6 +6,7 @@ on:  # yamllint disable-line rule:truthy
     branches:
       - main
   pull_request:
+    types: [opened, synchronize, reopened]
     branches:
       - main
 jobs:
