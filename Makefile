@@ -31,6 +31,7 @@ get-version: ## Get version from galaxy.yml file
 
 install: get-version build ## Install molecule.driver collection
 	ansible-galaxy collection install --force molecule-driver-${VERSION}.tar.gz
+	pip3 install --user -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
 
 clean: ## Remove all auto-generated files
 	rm -rf ~/.ansible/collections/ansible_collections/molecule/driver
@@ -52,4 +53,4 @@ tests: ## Run molecule tests
 
 .PHONY: install-requirements-dev ## Install python requirements
 install-requirements-dev:
-	pip install -r requirements-dev.txt
+	pip3 install --user -r requirements-dev.txt
