@@ -184,6 +184,26 @@ Possible values:
 
 `Disabled` for no public IP. Molecule will not be able to connect instance without public IP. Not recommended to disable public IP for instances.
 
+**`DNS Records Management`**
+
+Only possible if public IP address is provisioned for the instance public_ip_allocation_method='Dynamic' or public_ip_allocation_method='Static'
+
+In case A type DNS record is required for the instance following parameters can be added.
+
+**`dns_relative_name`**
+
+**`dns_zone_name`**
+
+**`dns_zone_resourcegroup_name`**
+
+These parameters are only effective if all are provided.
+
+Public DNS zone should already exists. It will not be created by molecule.
+
+dns_zone_resourcegroup_name is resource group name for the public DNS zone, not for the instance.
+
+Only A record will be created, record will be deleted when instance will be destroyed. When instance deallocated DNS name will not work, because incorrect IP address will be in DNS record.
+
 **`ssh_public_key_path`**
 
 Path to ssh public key, that will be used to connect to the instance. Optional. Default value `~/.ssh/id_rsa.pub`, see `playbooks/azure/defaults/main.yml`.

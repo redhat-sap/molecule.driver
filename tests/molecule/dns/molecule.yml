@@ -1,0 +1,49 @@
+---
+dependency:
+  name: shell
+  command: |
+    ansible-galaxy install -r $MOLECULE_SCENARIO_DIRECTORY/requirements.yml
+    pip install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
+
+driver:
+  name: molecule-driver-azure
+
+platforms:
+  - name: dns
+    location: westeurope
+    resourcegroup_name: molecule-test
+    dns_relative_name: testdns
+    dns_zone_name: saponrhel.org
+    dns_zone_resourcegroup_name: administration
+    vm_size: Standard_B1s
+    marketplace_image:
+      offer: rhel-sap-apps
+      publisher: redhat
+      sku: 79sapapps-gen2
+      version: latest
+scenario:
+  create_sequence:
+    - create
+  converge_sequence: []
+  test_sequence:
+    - dependency
+    - destroy
+    - create
+    - create
+    - verify
+    - destroy
+    - destroy
+  destroy_sequence:
+    - destroy
+
+provisioner:
+  name: ansible
+  playbooks:
+    create: create.yml
+    prepare: prepare.yml
+    converge: converge.yml
+    side-effect: side_effect.yml
+    verify: verify.yml
+    destroy: destroy.yml
+verifier:
+  name: ansible

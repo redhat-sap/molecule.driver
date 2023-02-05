@@ -87,6 +87,23 @@
   async: "{{ azure_rm_virtualmachine_async_default }}"
   poll: "{{ azure_rm_virtualmachine_poll_default }}"
 
+- name: Ensure DNS records are created for instance
+  vars:
+    public_ip_allocation_method: "{{ item.public_ip_allocation_method | default(public_ip_allocation_method_default) }}"
+  when:
+    - (item.dns_relative_name is defined)
+    - (item.dns_zone_name is defined)
+    - (item.dns_zone_resourcegroup_name is defined)
+    - (public_ip_allocation_method == 'Dynamic' or public_ip_allocation_method == 'Static' )
+  azure.azcollection.azure_rm_dnsrecordset:
+    resource_group: "{{ item.dns_zone_resourcegroup_name }}"
+    relative_name: "{{ item.dns_relative_name }}"
+    zone_name: "{{ item.dns_zone_name }}"
+    record_type: A
+    records:
+      - entry: "{{ server.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+    state: present
+
 # - name: Print Azure job server.results
 #   ansible.builtin.debug:
 #     msg: "{{ server }}"
