@@ -33,6 +33,18 @@
     # TODO: this also deletes all attached managed disks - might not be desired behavior
     state: absent
 
+- name: Ensure DNS records are deleted for instance
+  when:
+    - (item.dns_relative_name is defined)
+    - (item.dns_zone_name is defined)
+    - (item.dns_zone_resourcegroup_name is defined)
+  azure.azcollection.azure_rm_dnsrecordset:
+    resource_group: "{{ item.dns_zone_resourcegroup_name }}"
+    relative_name: "{{ item.dns_relative_name }}"
+    zone_name: "{{ item.dns_zone_name }}"
+    record_type: A
+    state: absent
+
 - name: Destroy managed disks default snapshots
   vars:
     resourcegroup_name: "{{ item.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
