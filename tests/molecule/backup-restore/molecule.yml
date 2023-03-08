@@ -33,6 +33,7 @@ platforms:
 scenario:
   create_sequence:
     - create
+  prepare_sequence: []
   converge_sequence:
     - side_effect backup.yml
     # - side_effect restore.yml

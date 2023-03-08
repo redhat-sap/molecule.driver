@@ -12,13 +12,6 @@
 # You should have received a copy of the GNU General Public License along with this program.
 # If not, see <https://www.gnu.org/licenses/>.
 
-# - name: Stop instance before creating snapshots of managed disks
-#   azure.azcollection.azure_rm_virtualmachine:
-#     resource_group: "{{ instance.resourcegroup_name | default(azure_rm_resourcegroup_name_default) }}"
-#     name: "{{ instance.name }}"
-#     state: present
-#     started: false
-
 - name: Backup managed disks for an instance
   when: instance.data_disks is defined
   ansible.builtin.include_tasks: azure/tasks/backup_managed_disk.yml
