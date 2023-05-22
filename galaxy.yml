@@ -16,12 +16,12 @@ namespace: molecule
 
 name: driver
 
-version: 0.5.0
+version: 0.5.1
 
 readme: README.md
 
 authors:
-  - <https://github.com/kksat>
+  - Kirill Satarin (@kksat)
 
 description: |
   Collection for Ansible Molecule drivers:
@@ -36,7 +36,9 @@ tags: [molecule, driver, azure]
 
 dependencies: {
   'azure.azcollection': '1.14.0',
-  'community.crypto': '2.9.0'
+  'community.crypto': '2.9.0',
+  'community.general': '6.5.0',
+  'ansible.posix': '1.5.1',
 }
 
 repository: https://github.com/redhat-sap/molecule.driver
