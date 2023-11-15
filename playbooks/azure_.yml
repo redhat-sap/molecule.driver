@@ -17,3 +17,8 @@
 # WARNING  Listing 1 violation(s) that are fatal
 # syntax-check[missing-file]: Unable to retrieve file contents
 # .../side_effect.yml:1:1 Could not find or access 'ansible_collections/molecule/driver/playbooks/molecule.driver.azure_' on the Ansible Controller.
+
+- name: Only required to avoid anslble-lint error
+  hosts: localhost
+  gather_facts: false
+  tasks: []
